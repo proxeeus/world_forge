@@ -342,10 +342,10 @@ class World(DirectObject):
 
             self.accept("alt-f", self.fogToggle)
 
-            self.accept("t", self.camLightToggle)
-            self.accept("k", self.displayKeyHelp)
-            self.accept("f", self.toggleFlymode)
-            self.accept("l", self.reloadZone)
+            self.accept(cfg['control_lighting'], self.camLightToggle)
+            self.accept(cfg['control_help'], self.displayKeyHelp)
+            self.accept(cfg['control_flymode'], self.toggleFlymode)
+            self.accept(cfg['control_reload-zone'], self.reloadZone)
             # Deactivate this for now
             #self.accept("z", self.saveDefaultZone)
             self.accept(cfg['control_cam-left'], self.setKey, ["cam-left",1])
@@ -647,7 +647,7 @@ class World(DirectObject):
             cfg = self.configurator.config
             cfg['default_zone'] = self.zone.name
             #self.configurator.saveConfig()
-        
+
     # zone reload user interface
     
     # this gets called from our update loop when it detects that zone_reload_name has been set
