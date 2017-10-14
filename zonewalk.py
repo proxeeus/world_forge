@@ -328,6 +328,10 @@ class World(DirectObject):
         
     # User controls -----------------------------------------------------------
     def toggleControls(self, on):
+
+        self.configurator = Configurator(self)
+        cfg = self.configurator.config
+
         if on == 1:
             self.accept("escape", self.exitGame)
 
@@ -338,25 +342,28 @@ class World(DirectObject):
             self.accept("5", self.setSpeed, ["speed", 4])
 
             self.accept("alt-f", self.fogToggle)
+
             self.accept("t", self.camLightToggle)
             self.accept("k", self.displayKeyHelp)
             self.accept("f", self.toggleFlymode)
             self.accept("l", self.reloadZone)
             self.accept("z", self.saveDefaultZone)
-            self.accept("a", self.setKey, ["cam-left",1])
-            self.accept("d", self.setKey, ["cam-right",1])
-            self.accept("w", self.setKey, ["forward",1])
-            self.accept("mouse1", self.setKey, ["forward",1])
+            self.accept(cfg['cam-left'], self.setKey, ["cam-left",1])
+            self.accept(cfg['cam-right'], self.setKey, ["cam-right",1])
+            self.accept(cfg['forward'], self.setKey, ["forward",1])
+            # Mouse1 should be for clicking on objects
+            #self.accept("mouse1", self.setKey, ["forward",1])
             self.accept("mouse3", self.setKey, ["mouse3",1])
-            self.accept("s", self.setKey, ["backward",1])
+            self.accept(cfg['backward'], self.setKey, ["backward",1])
         
             self.accept("k-up", self.hideKeyHelp)
-            self.accept("a-up", self.setKey, ["cam-left",0])
-            self.accept("d-up", self.setKey, ["cam-right",0])
-            self.accept("w-up", self.setKey, ["forward",0])
-            self.accept("mouse1-up", self.setKey, ["forward",0])
+            self.accept(cfg['cam-left']+"-up", self.setKey, ["cam-left",0])
+            self.accept(cfg['cam-right']+"-up", self.setKey, ["cam-right",0])
+            self.accept(cfg['forward']+"-up", self.setKey, ["forward",0])
+            # Mouse1 should be for clicking on objects
+            #self.accept("mouse1-up", self.setKey, ["forward",0])
             self.accept("mouse3-up", self.setKey, ["mouse3",0])
-            self.accept("s-up", self.setKey, ["backward",0])
+            self.accept(cfg['backward']+"-up", self.setKey, ["backward",0])
         else:
             messenger.clear()
             
