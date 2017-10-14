@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57d2779c-99d0-4999-9b08-db2caa4536fd" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/gui/picker.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zone.py" afterPath="$PROJECT_DIR$/zone.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/zonewalk.py" afterPath="$PROJECT_DIR$/zonewalk.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="spawn_tool.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -68,14 +65,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="zonewalk.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="zonewalk.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/zonewalk.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.8313008">
-              <caret line="697" column="15" selection-start-line="697" selection-start-column="14" selection-end-line="697" selection-end-column="15" />
+            <state vertical-scroll-proportion="-7.0">
+              <caret line="733" column="27" selection-start-line="733" selection-start-column="27" selection-end-line="733" selection-end-column="27" />
               <folding>
                 <element signature="e#1584#1593#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.34412956">
+              <caret line="10" column="63" selection-start-line="10" selection-start-column="63" selection-end-line="10" selection-end-column="63" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -94,6 +101,7 @@
         <option value="$PROJECT_DIR$/zone.py" />
         <option value="$PROJECT_DIR$/gui/picker.py" />
         <option value="$PROJECT_DIR$/zonewalk.py" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -728,11 +736,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/zonewalk.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.8313008">
-          <caret line="697" column="15" selection-start-line="697" selection-start-column="14" selection-end-line="697" selection-end-column="15" />
+        <state vertical-scroll-proportion="-7.0">
+          <caret line="733" column="27" selection-start-line="733" selection-start-column="27" selection-end-line="733" selection-end-column="27" />
           <folding>
             <element signature="e#1584#1593#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34412956">
+          <caret line="10" column="63" selection-start-line="10" selection-start-column="63" selection-end-line="10" selection-end-column="63" />
+          <folding />
         </state>
       </provider>
     </entry>
