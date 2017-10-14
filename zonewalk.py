@@ -699,8 +699,11 @@ def onModelClick():
 
             print namedNode.getName()
             print "Collision Point: ", thePoint
+            print p.getTag("key")
 
             namedNode.ls()
+        else:
+            print "Clicked location point (y, x, z):", thePoint
 
 # ------------------------------------------------------------------------------
 # main
@@ -731,6 +734,7 @@ base.camera.setPos(world.campos)
 m = loader.loadModel("models/cube.egg")
 # renders it to the scene
 m.reparentTo(render)
+m.setTag("key", "toto")
 # set up the collision body
 min,macks= m.getTightBounds()
 radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
