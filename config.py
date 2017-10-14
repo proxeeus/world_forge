@@ -61,13 +61,15 @@ class Configurator():
         else:
             cfg = self.cfg_file.readlines()
             for line in cfg:
-                    # print line
-                    tokens = line.split('=')
-                    key = tokens[0].strip()
-                    value = tokens[1].strip()
+                if not line.lstrip().startswith('//'):
+                    if line not in['\n', '\r\n']:
+                        # print line
+                        tokens = line.split('=')
+                        key = tokens[0].strip()
+                        value = tokens[1].strip()
 
-                    self.config[key] = value
-                    self.world.consoleOut('config: %s = %s' % (key, value))
+                        self.config[key] = value
+                        self.world.consoleOut('config: %s = %s' % (key, value))
     
     def saveConfig(self):
         try:
