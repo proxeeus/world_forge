@@ -100,7 +100,7 @@ class Configurator():
         self.config['default_zone'] = 'ecommons'
 
         # write config
-        self.saveConfig()
+        #self.saveConfig()
         
         return 1    # let the dialog know it can exit
                 

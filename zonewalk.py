@@ -329,7 +329,6 @@ class World(DirectObject):
     # User controls -----------------------------------------------------------
     def toggleControls(self, on):
 
-        self.configurator = Configurator(self)
         cfg = self.configurator.config
 
         if on == 1:
@@ -347,23 +346,24 @@ class World(DirectObject):
             self.accept("k", self.displayKeyHelp)
             self.accept("f", self.toggleFlymode)
             self.accept("l", self.reloadZone)
-            self.accept("z", self.saveDefaultZone)
-            self.accept(cfg['cam-left'], self.setKey, ["cam-left",1])
-            self.accept(cfg['cam-right'], self.setKey, ["cam-right",1])
-            self.accept(cfg['forward'], self.setKey, ["forward",1])
+            # Deactivate this for now
+            #self.accept("z", self.saveDefaultZone)
+            self.accept(cfg['control_cam-left'], self.setKey, ["cam-left",1])
+            self.accept(cfg['control_cam-right'], self.setKey, ["cam-right",1])
+            self.accept(cfg['control_forward'], self.setKey, ["forward",1])
             # Mouse1 should be for clicking on objects
             #self.accept("mouse1", self.setKey, ["forward",1])
             self.accept("mouse3", self.setKey, ["mouse3",1])
-            self.accept(cfg['backward'], self.setKey, ["backward",1])
+            self.accept(cfg['control_backward'], self.setKey, ["backward",1])
         
             self.accept("k-up", self.hideKeyHelp)
-            self.accept(cfg['cam-left']+"-up", self.setKey, ["cam-left",0])
-            self.accept(cfg['cam-right']+"-up", self.setKey, ["cam-right",0])
-            self.accept(cfg['forward']+"-up", self.setKey, ["forward",0])
+            self.accept(cfg['control_cam-left']+"-up", self.setKey, ["cam-left",0])
+            self.accept(cfg['control_cam-right']+"-up", self.setKey, ["cam-right",0])
+            self.accept(cfg['control_forward']+"-up", self.setKey, ["forward",0])
             # Mouse1 should be for clicking on objects
             #self.accept("mouse1-up", self.setKey, ["forward",0])
             self.accept("mouse3-up", self.setKey, ["mouse3",0])
-            self.accept(cfg['backward']+"-up", self.setKey, ["backward",0])
+            self.accept(cfg['control_backward']+"-up", self.setKey, ["backward",0])
         else:
             messenger.clear()
             
@@ -627,7 +627,7 @@ class World(DirectObject):
         cfg = self.configurator.config
         cfg['xres'] = str(self.xres)
         cfg['yres'] = str(self.yres)
-        self.configurator.saveConfig()
+        #self.configurator.saveConfig()
 
     # initial world load after bootup
     def load(self):       
@@ -646,7 +646,7 @@ class World(DirectObject):
         if self.zone:
             cfg = self.configurator.config
             cfg['default_zone'] = self.zone.name
-            self.configurator.saveConfig()
+            #self.configurator.saveConfig()
         
     # zone reload user interface
     
