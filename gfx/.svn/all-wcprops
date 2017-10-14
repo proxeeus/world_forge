@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 26
+/svn/!svn/ver/38/trunk/gfx
+END
+mesh.py
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/33/trunk/gfx/mesh.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/29/trunk/gfx/__init__.py
+END
+polygroup.py
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/38/trunk/gfx/polygroup.py
+END
+model.py
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/!svn/ver/38/trunk/gfx/model.py
+END
+texture.py
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/37/trunk/gfx/texture.py
+END
+sprite.py
+K 25
+svn:wc:ra_dav:version-url
+V 36
+/svn/!svn/ver/36/trunk/gfx/sprite.py
+END
