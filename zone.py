@@ -67,7 +67,6 @@ from gfx.texture import TextureManager
 from gfx.sprite import Sprite
 
 
-
 class Zone():
 
     def __init__(self, world, name, basedir):
@@ -98,7 +97,7 @@ class Zone():
         self.rootNode.reparentTo(render)
         
         self.delta_t = 0
-        
+
     # This currently only updates the direct zone sprites
     def update(self):
         if self.load_complete != 1:
@@ -347,9 +346,7 @@ class Zone():
 
                     else:
                         print 'could not find sprite for geom node, node texture cant be animated'
-        
-        
-        
+
     # load up everything related to this zone
     def load(self):
         
@@ -466,10 +463,4 @@ class Zone():
             
         print 'zone load complete'
         self.load_complete = 1
-
-        # loads a model in memory
-        #m = loader.loadModel("models/cube.egg")
-        # renders it to the scene
-        #m.reparentTo(render)
-
         return 0

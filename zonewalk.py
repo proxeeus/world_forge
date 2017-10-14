@@ -53,7 +53,8 @@ from direct.actor.Actor import Actor
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import WindowProperties
 
-
+from gui.picker import Picker
+from pandac.PandaModules import CollisionSphere
 
 from zone import Zone
 from config import Configurator
@@ -686,7 +687,20 @@ class World(DirectObject):
         
         self.login_client = UDPClientStream('127.0.0.1', 5998)
             
-        
+def onModelClick():
+    # Code adapted freely from http://www.panda3d.org/forums/viewtopic.php?t=12717
+    global picker
+    namedNode, thePoint, rawNode = picker.pick()
+    if namedNode:
+        if "_mesh" not in namedNode.getName():  # rough test to avoid printing infos on global zone mesh (ie: "freporte_mesh")
+            name = namedNode.getName()
+            p = namedNode.getParent()
+            pos = p.getPos()
+
+            print namedNode.getName()
+            print "Collision Point: ", thePoint
+
+            namedNode.ls()
 
 # ------------------------------------------------------------------------------
 # main
@@ -711,6 +725,23 @@ world.camHeading = 270.0
 # world.camHeading = 41.19
 
 base.camera.setPos(world.campos)
+
+### TESTING MODEL CLICK
+# loads a model in memory
+m = loader.loadModel("models/cube.egg")
+# renders it to the scene
+m.reparentTo(render)
+# set up the collision body
+min,macks= m.getTightBounds()
+radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
+
+cs = CollisionSphere(0,0,0, radius)
+csNode = m.attachNewNode(CollisionNode("modelCollide"))
+csNode.node().addSolid(cs)
+
+picker = Picker(render)
+base.accept("mouse1", onModelClick)
+#######
 
 while True:
     world.update();
