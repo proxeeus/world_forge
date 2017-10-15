@@ -54,6 +54,7 @@ from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import WindowProperties
 
 from gui.picker import Picker
+from gui.picker2 import Picker2
 from pandac.PandaModules import CollisionSphere
 
 from zone import Zone
@@ -61,7 +62,7 @@ from config import Configurator
 from gui.filedialog import FileDialog
 from net.client import UDPClientStream
 
-
+last_selected_model = None
 
 VERSION = '0.1.4'
 
@@ -686,24 +687,31 @@ class World(DirectObject):
     def doLogin(self):
         
         self.login_client = UDPClientStream('127.0.0.1', 5998)
-            
+
+#####################################
+# Custom methods
 def onModelClick():
     # Code adapted freely from http://www.panda3d.org/forums/viewtopic.php?t=12717
-    global picker
+    global picker, selected_model
     namedNode, thePoint, rawNode = picker.pick()
     if namedNode:
         if "_mesh" not in namedNode.getName():  # rough test to avoid printing infos on global zone mesh (ie: "freporte_mesh")
             name = namedNode.getName()
             p = namedNode.getParent()
             pos = p.getPos()
-
+            selected_model = namedNode
             print namedNode.getName()
             print "Collision Point: ", thePoint
-            print p.getTag("key")
 
             namedNode.ls()
         else:
             print "Clicked location point (y, x, z):", thePoint
+            #selected_model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
+
+            model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
+            print "Moved !"
+
+###################################
 
 # ------------------------------------------------------------------------------
 # main
@@ -734,7 +742,6 @@ base.camera.setPos(world.campos)
 m = loader.loadModel("models/cube.egg")
 # renders it to the scene
 m.reparentTo(render)
-m.setTag("key", "toto")
 # set up the collision body
 min,macks= m.getTightBounds()
 radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
@@ -743,8 +750,11 @@ cs = CollisionSphere(0,0,0, radius)
 csNode = m.attachNewNode(CollisionNode("modelCollide"))
 csNode.node().addSolid(cs)
 
-picker = Picker(render)
-base.accept("mouse1", onModelClick)
+#picker = Picker(render)
+picker = Picker2()
+picker.makePickable(m)
+
+#base.accept("mouse1", onModelClick)
 #######
 
 while True:
