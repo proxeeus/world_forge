@@ -740,8 +740,11 @@ base.camera.setPos(world.campos)
 ### TESTING MODEL CLICK
 # loads a model in memory
 m = loader.loadModel("models/cube.egg")
+m2 = loader.loadModel("models/cube.egg")
 # renders it to the scene
 m.reparentTo(render)
+m2.reparentTo(render)
+m2.setPos(28,58,-14)
 # set up the collision body
 min,macks= m.getTightBounds()
 radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
@@ -750,9 +753,14 @@ cs = CollisionSphere(0,0,0, radius)
 csNode = m.attachNewNode(CollisionNode("modelCollide"))
 csNode.node().addSolid(cs)
 
+cs2 = CollisionSphere(0,0,0, radius)
+csNode2 = m2.attachNewNode(CollisionNode("modelCollide"))
+csNode2.node().addSolid(cs2)
+
 #picker = Picker(render)
 picker = Picker2()
 picker.makePickable(m)
+picker.makePickable(m2)
 
 #base.accept("mouse1", onModelClick)
 #######
