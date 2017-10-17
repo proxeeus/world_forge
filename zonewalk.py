@@ -708,7 +708,7 @@ def onModelClick():
             print "Clicked location point (y, x, z):", thePoint
             #selected_model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
 
-            model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
+            m.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
             print "Moved !"
 
 ###################################
