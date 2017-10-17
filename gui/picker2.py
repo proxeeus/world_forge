@@ -12,19 +12,6 @@ from direct.showbase import DirectObject
 from pandac.PandaModules import *
 from gui.picker import Picker
 
-#This function, given a line (vector plus origin point) and a desired z value,
-#will give us the point on the line where the desired z value is what we want.
-#This is how we know where to position an object in 3D space based on a 2D mouse
-#position. It also assumes that we are dragging in the XY plane.
-#
-#This is derived from the mathmatical of a plane, solved for a given point
-def PointAtZ(z, point, vec):
-  return point + vec * ((z-point.getZ()) / vec.getZ())
-
-# A handy little function for getting the proper position for a given square1
-def SquarePos(i):
-    return LPoint3((i % 8) - 3.5, int(i // 8) - 3.5, 0)
-
 class Picker2(DirectObject.DirectObject):
    def __init__(self, topNode = None):
       #setup collision stuff
@@ -85,17 +72,6 @@ class Picker2(DirectObject.DirectObject):
    def selectMe(self):
 
       global picker
-     # get the mouse position
-      # get the mouse position
-      mpos = base.mouseWatcherNode.getMouse()
-      #Set the position of the ray based on the mouse position
-      self.pickerRay.setFromLens(base.camNode, mpos.getX(), mpos.getY())
-      #Gets the point described by pickerRay.getOrigin(), which is relative to
-      #camera, relative instead to render
-      nearPoint = render.getRelativePoint(camera, self.pickerRay.getOrigin())
-      #Same thing with the direction of the ray
-      nearVec = render.getRelativeVector(camera, self.pickerRay.getDirection())
-      print mpos
 
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
@@ -104,9 +80,9 @@ class Picker2(DirectObject.DirectObject):
       else:
          picker = Picker(render)
          # object already selected so we need to do some shit there and unset it
-         # bla bla do some shit
+
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
-         #self.lastSelectedObject.setPos(PointAtZ(.5, nearPoint, nearVec) )
+
          self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
