@@ -11,6 +11,7 @@ from direct.showbase import DirectObject
 #for collision stuff
 from pandac.PandaModules import *
 from gui.picker import Picker
+import globals
 
 class Picker2(DirectObject.DirectObject):
    def __init__(self, topNode = None):
@@ -86,3 +87,4 @@ class Picker2(DirectObject.DirectObject):
 
          self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
+         globals.spawndialog.SetTitle('lol title')

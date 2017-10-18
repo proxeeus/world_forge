@@ -64,8 +64,10 @@ from net.client import UDPClientStream
 
 import wx
 from gui.spawnerdialog import SpawnsFrame
+import globals
 
 last_selected_model = None
+spawndialog = None
 
 VERSION = '0.1.4'
 
@@ -302,7 +304,7 @@ class World(DirectObject):
         # Add the spinCameraTask procedure to the task manager.
         # taskMgr.add(self.spinCameraTask, "SpinCameraTask")
         taskMgr.add(self.camTask, "camTask")
-        
+
         self.toggleControls(1)
 
         # need to step the task manager once to make our fake console work
@@ -766,9 +768,9 @@ picker.makePickable(m)
 picker.makePickable(m2)
 
 app = wx.App()
+globals.spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
+globals.spawndialog.Show()
 
-spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
-spawndialog.Show()
 
 #base.accept("mouse1", onModelClick)
 #######
