@@ -62,6 +62,9 @@ from config import Configurator
 from gui.filedialog import FileDialog
 from net.client import UDPClientStream
 
+import wx
+from gui.spawnerdialog import SpawnsFrame
+
 last_selected_model = None
 
 VERSION = '0.1.4'
@@ -761,6 +764,11 @@ csNode2.node().addSolid(cs2)
 picker = Picker2()
 picker.makePickable(m)
 picker.makePickable(m2)
+
+app = wx.App()
+
+spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
+spawndialog.Show()
 
 #base.accept("mouse1", onModelClick)
 #######
