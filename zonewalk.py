@@ -65,6 +65,7 @@ from net.client import UDPClientStream
 import wx
 from gui.spawnerdialog import SpawnsFrame
 import globals
+import MySQLdb
 
 last_selected_model = None
 spawndialog = None
@@ -770,7 +771,14 @@ picker.makePickable(m2)
 app = wx.App()
 globals.spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
 globals.spawndialog.Show()
-
+cfg = Configurator(world)
+#conn = MySQLdb.Connection(
+#    host=cfg['host'],
+#    user=cfg['user'],
+#    passwd=cfg['password'],
+#    port=cfg['port'],
+#    db=cfg['db']
+#)
 
 #base.accept("mouse1", onModelClick)
 #######

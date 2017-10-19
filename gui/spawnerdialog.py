@@ -30,6 +30,14 @@ class SpawnsFrame ( wx.Frame ):
 		
 		self.SetMenuBar( self.m_menubar )
 		
+		bSizer1 = wx.BoxSizer( wx.VERTICAL )
+		
+		self.m_treeCtrlSpawnGroups = wx.TreeCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 15000,10000 ), wx.TR_DEFAULT_STYLE )
+		bSizer1.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
+		
+		
+		self.SetSizer( bSizer1 )
+		self.Layout()
 		
 		self.Centre( wx.BOTH )
 	
