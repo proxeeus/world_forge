@@ -745,42 +745,65 @@ base.camera.setPos(world.campos)
 
 ### TESTING MODEL CLICK
 # loads a model in memory
-m = loader.loadModel("models/cube.egg")
-m2 = loader.loadModel("models/cube.egg")
+#m = loader.loadModel("models/cube.egg")
+#m2 = loader.loadModel("models/cube.egg")
 # renders it to the scene
-m.reparentTo(render)
-m2.reparentTo(render)
-m2.setPos(28,58,-14)
+#m.reparentTo(render)
+#m2.reparentTo(render)
+#m2.setPos(28,58,-14)
 # set up the collision body
-min,macks= m.getTightBounds()
-radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
+#min,macks= m.getTightBounds()
+#radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
 
-cs = CollisionSphere(0,0,0, radius)
-csNode = m.attachNewNode(CollisionNode("modelCollide"))
-csNode.node().addSolid(cs)
+#cs = CollisionSphere(0,0,0, radius)
+#csNode = m.attachNewNode(CollisionNode("modelCollide"))
+#csNode.node().addSolid(cs)
 
-cs2 = CollisionSphere(0,0,0, radius)
-csNode2 = m2.attachNewNode(CollisionNode("modelCollide"))
-csNode2.node().addSolid(cs2)
+#cs2 = CollisionSphere(0,0,0, radius)
+#csNode2 = m2.attachNewNode(CollisionNode("modelCollide"))
+#csNode2.node().addSolid(cs2)
 
 #picker = Picker(render)
 picker = Picker2()
-picker.makePickable(m)
-picker.makePickable(m2)
+#picker.makePickable(m)
+#picker.makePickable(m2)
 
 app = wx.App()
 globals.spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
 globals.spawndialog.Show()
-cfg = Configurator(world)
-#conn = MySQLdb.Connection(
-#    host=cfg['host'],
-#    user=cfg['user'],
-#    passwd=cfg['password'],
-#    port=cfg['port'],
-#    db=cfg['db']
-#)
+configurator = Configurator(world)
+cfg = configurator.config
+conn = MySQLdb.Connection(
+    host=cfg['host'],
+    user=cfg['user'],
+    passwd=cfg['password'],
+    db=cfg['db']
+)
+cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
+        sg.delay as Spawngroup_delay FROM spawn2 s2
+JOIN spawngroup sg ON sg.id = s2.spawngroupid
+JOIN spawnentry se
+ON se.spawngroupid = sg.id
+JOIN npc_types nt
+ON nt.id = se.npcid
+WHERE s2.zone = 'freporte'"""
+cursor.execute(query)
+numrows = cursor.rowcount
+for x in range(0, numrows):
+    row = cursor.fetchone()
+    #print row[0], "-->", row[1]
+    s = loader.loadModel("models/cube.egg")
+    s.reparentTo(render)
+    s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
+    min,macks= s.getTightBounds()
+    radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
+    cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
+    csNode = s.attachNewNode(CollisionNode("modelCollide"))
+    csNode.node().addSolid(cs)
+    s.setTag("name", row["name"])
+    picker.makePickable(s)
 
-#base.accept("mouse1", onModelClick)
 #######
 
 while True:
