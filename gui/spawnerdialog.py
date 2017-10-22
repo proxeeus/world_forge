@@ -40,6 +40,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.Layout()
 		
 		self.Centre( wx.BOTH )
+
 	
 	def __del__( self ):
 		pass
