@@ -818,10 +818,10 @@ for x in range(0, numrows):
     result = globals.spawndialog.GetItemByLabel(treeview, row["spawngroup_name"], treeview.GetRootItem())
     if result.IsOk():
         #spawngroup = treeview.AppendItem(result, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(result, row["name"] + " - " + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]))
+        spawnpoint = treeview.AppendItem(result, row["name"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
     else:
         spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(spawngroup, row["name"] + " - " + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]))
+        spawnpoint = treeview.AppendItem(spawngroup, row["name"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
 
 #######
 
