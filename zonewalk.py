@@ -806,6 +806,23 @@ numrows = cursor.rowcount
 # Visually loads spawn data in the zone
 world.PopulateSpawns(cursor, numrows)
 
+# NEEDS REFACTORING
+# Populates the spawns treeview
+cursor = world.GetDbSpawnData(connection)
+numrows = cursor.rowcount
+treeview = globals.spawndialog.GetSpawnsTreeView
+root = treeview.AddRoot('Spawns for this zone')
+
+for x in range(0, numrows):
+    row = cursor.fetchone()
+    result = globals.spawndialog.GetItemByLabel(treeview, row["spawngroup_name"], treeview.GetRootItem())
+    if result.IsOk():
+        #spawngroup = treeview.AppendItem(result, row["spawngroup_name"])
+        spawnpoint = treeview.AppendItem(result, row["name"] + " - " + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]))
+    else:
+        spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
+        spawnpoint = treeview.AppendItem(spawngroup, row["name"] + " - " + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]))
+
 #######
 
 while True:

@@ -44,5 +44,22 @@ class SpawnsFrame ( wx.Frame ):
 	
 	def __del__( self ):
 		pass
-	
 
+	@property
+	def GetSpawnsTreeView(self):
+		return self.m_treeCtrlSpawnGroups
+
+	def GetItemByLabel(self, tree, search_text, root_item):
+		item, cookie = tree.GetFirstChild(root_item)
+
+		while item.IsOk():
+			text = tree.GetItemText(item)
+			if text.lower() == search_text.lower():
+				return item
+			if tree.ItemHasChildren(item):
+				match = self.GetItemByLabel(tree, search_text, item)
+				if match.IsOk():
+					return match
+			item, cookie = tree.GetNextChild(root_item, cookie)
+
+		return wx.TreeItemId()
