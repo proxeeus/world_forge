@@ -10,7 +10,7 @@ The rough idea as of now would be to have a tool capable of:
 - waypoints would be governed by the same set of principles
 - additionally, this kind of functionality could be extended into a fully-fledged world editor
 
-As of right now, it is possible to load a fully-textured zone and explore it.
-Basic 3D objects interaction is currently being worked on (clicking on models, moving them through the zone...)
+As of right now, it is possible to load a fully-textured zone, explore it, and have it populated with spawn data from
+the configured EQEmu DB.
 
-As soon as this step is completed, work will start on basic GUI elements, and establishing a MySQL connection.
+The next steps is to implement basic GUI components and update spawn data.
