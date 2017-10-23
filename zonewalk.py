@@ -694,30 +694,87 @@ class World(DirectObject):
         
         self.login_client = UDPClientStream('127.0.0.1', 5998)
 
-#####################################
-# Custom methods
-def onModelClick():
-    # Code adapted freely from http://www.panda3d.org/forums/viewtopic.php?t=12717
-    global picker, selected_model
-    namedNode, thePoint, rawNode = picker.pick()
-    if namedNode:
-        if "_mesh" not in namedNode.getName():  # rough test to avoid printing infos on global zone mesh (ie: "freporte_mesh")
-            name = namedNode.getName()
-            p = namedNode.getParent()
-            pos = p.getPos()
-            selected_model = namedNode
-            print namedNode.getName()
-            print "Collision Point: ", thePoint
+    #####################################
+    # Custom methods
+    #####################################
 
-            namedNode.ls()
-        else:
-            print "Clicked location point (y, x, z):", thePoint
-            #selected_model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
 
-            m.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
-            print "Moved !"
+    # What happens when a user clicks on a model
+    def onModelClick():
+        # Code adapted freely from http://www.panda3d.org/forums/viewtopic.php?t=12717
+        global picker, selected_model
+        namedNode, thePoint, rawNode = picker.pick()
+        if namedNode:
+            if "_mesh" not in namedNode.getName():  # rough test to avoid printing infos on global zone mesh (ie: "freporte_mesh")
+                name = namedNode.getName()
+                p = namedNode.getParent()
+                pos = p.getPos()
+                selected_model = namedNode
+                print namedNode.getName()
+                print "Collision Point: ", thePoint
 
-###################################
+                namedNode.ls()
+            else:
+                print "Clicked location point (y, x, z):", thePoint
+                #selected_model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
+
+                m.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
+                print "Moved !"
+
+    # Handles populating the zone with spawn data from the EQEmu DB
+    # also makes each spawner model pickable
+    def PopulateSpawns(self, cursor, numrows):
+        for x in range(0, numrows):
+            row = cursor.fetchone()
+            s = loader.loadModel("models/cube.egg")
+            s.reparentTo(render)
+            s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
+            min,macks= s.getTightBounds()
+            radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
+            cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
+            csNode = s.attachNewNode(CollisionNode("modelCollide"))
+            csNode.node().addSolid(cs)
+            s.setTag("name", row["name"])
+            picker.makePickable(s)
+
+    # Establishes a connection to the EQEmu database
+    def ConnectToDatabase(self):
+        configurator = Configurator(world)
+        cfg = configurator.config
+        conn = MySQLdb.Connection(
+            host=cfg['host'],
+            user=cfg['user'],
+            passwd=cfg['password'],
+            db=cfg['db'])
+
+        return conn
+
+    # Queries the Database in order to get spawn data
+    # (this should be refactored at some point)
+    def GetDbSpawnData(self, connection):
+        cursor = connection.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
+                sg.delay as Spawngroup_delay FROM spawn2 s2
+                JOIN spawngroup sg ON sg.id = s2.spawngroupid
+                JOIN spawnentry se
+                ON se.spawngroupid = sg.id
+                JOIN npc_types nt
+                ON nt.id = se.npcid
+                WHERE s2.zone = 'freporte'"""
+        cursor.execute(query)
+        return cursor
+
+    # Initializes the camera position upon startup
+    def InitCameraPosition(self):
+        world.campos = Point3(-155.6, 41.2, 4.9 + world.eyeHeight)
+        world.camHeading = 270.0
+
+        base.camera.setPos(world.campos)
+
+    ###################################
+    # End
+    ###################################
 
 # ------------------------------------------------------------------------------
 # main
@@ -728,54 +785,27 @@ print 'starting zonewalk v' + VERSION
 world = World()
 world.load()
 
+world.InitCameraPosition()
 
-# THIS stuff ought to go into config at some point :)
-
-# this position is near the qeynos side zone in of Blackburrow
-world.campos = Point3(-155.6, 41.2, 4.9 + world.eyeHeight)
-world.camHeading = 270.0
-
-base.camera.setPos(world.campos)
-
+# Creates a Picker2 object in charge of setting spawn models as Pickable.
 picker = Picker2()
 
+# Loads the various GUI components
 app = wx.App()
 globals.spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
 globals.spawndialog.Show()
-configurator = Configurator(world)
-cfg = configurator.config
-conn = MySQLdb.Connection(
-    host=cfg['host'],
-    user=cfg['user'],
-    passwd=cfg['password'],
-    db=cfg['db']
-)
-cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
-        sg.delay as Spawngroup_delay FROM spawn2 s2
-        JOIN spawngroup sg ON sg.id = s2.spawngroupid
-        JOIN spawnentry se
-        ON se.spawngroupid = sg.id
-        JOIN npc_types nt
-        ON nt.id = se.npcid
-        WHERE s2.zone = 'freporte'"""
-cursor.execute(query)
-numrows = cursor.rowcount
-for x in range(0, numrows):
-    row = cursor.fetchone()
-    #print row[0], "-->", row[1]
-    s = loader.loadModel("models/cube.egg")
-    s.reparentTo(render)
-    s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
-    min,macks= s.getTightBounds()
-    radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
-    cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
-    csNode = s.attachNewNode(CollisionNode("modelCollide"))
-    csNode.node().addSolid(cs)
-    s.setTag("name", row["name"])
-    picker.makePickable(s)
+#
 
-    root = globals.spawndialog.m_treeCtrlSpawnGroups.AddRoot('Spawn Groups')
+# Connects to the database
+connection = world.ConnectToDatabase()
+# Gets spawn data for the current zone
+cursor = world.GetDbSpawnData(connection)
+
+numrows = cursor.rowcount
+
+# Visually loads spawn data in the zone
+world.PopulateSpawns(cursor, numrows)
+
 #######
 
 while True:

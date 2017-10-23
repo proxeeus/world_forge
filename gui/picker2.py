@@ -85,6 +85,6 @@ class Picker2(DirectObject.DirectObject):
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
          print self.lastSelectedObject.getTag("name")
-         #self.lastSelectedObject.setPos(thePoint)
+         self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
          globals.spawndialog.SetTitle('lol title')
