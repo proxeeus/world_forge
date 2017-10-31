@@ -14,6 +14,12 @@ import wx.xrc
 ## Class SpawnsFrame
 ###########################################################################
 
+import re
+import globals
+from panda3d.core import Vec3, Vec4, Point3, VBase4, BitMask32
+
+pattern = "\(([^\)]+)\)"
+
 class SpawnsFrame ( wx.Frame ):
 	
 	def __init__( self, parent ):
@@ -34,14 +40,35 @@ class SpawnsFrame ( wx.Frame ):
 		
 		self.m_treeCtrlSpawnGroups = wx.TreeCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 15000,10000 ), wx.TR_DEFAULT_STYLE )
 		bSizer1.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
-		
+
+		self.m_treeCtrlSpawnGroups.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnSelectSpawn )
 		
 		self.SetSizer( bSizer1 )
 		self.Layout()
 		
 		self.Centre( wx.BOTH )
 
-	
+
+	# Double-click on a node
+	def OnSelectSpawn(self, event):
+		selectedText = self.m_treeCtrlSpawnGroups.GetItemText(event.GetItem())
+		match = re.search(pattern, selectedText)
+		if match:
+			found = match.group(1)
+			coords = found.split(",")
+			globals.selectedSpawnXYZ = found
+			globals.selectedSpawnPoint3D = Point3(float(coords[1]), float(coords[0]), float(coords[2]))
+			model = self.GetModelByXYZ(globals.selectedSpawnPoint3D, globals.model_list)
+			if model:
+				base.camera.reparentTo(model)
+
+	def GetModelByXYZ(self, point3D, model_list):
+		print point3D
+		for model in model_list:
+			currentP3D = Point3(model.getX(), model.getY(), model.getZ())
+			if point3D == currentP3D:
+				return model
+
 	def __del__( self ):
 		pass
 
@@ -63,3 +90,5 @@ class SpawnsFrame ( wx.Frame ):
 			item, cookie = tree.GetNextChild(root_item, cookie)
 
 		return wx.TreeItemId()
+
+

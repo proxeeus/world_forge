@@ -1,3 +1,4 @@
 def init():
-    global spawndialog
-    spawndialog = None
+    global spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, model_list
+    spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, model_list = None
+

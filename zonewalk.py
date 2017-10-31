@@ -606,7 +606,7 @@ class World(DirectObject):
 
         if self.zone != None:
             self.zone.update()
-          
+
         taskMgr.step()
    
         if self.login_client != None:
@@ -724,6 +724,7 @@ class World(DirectObject):
     # Handles populating the zone with spawn data from the EQEmu DB
     # also makes each spawner model pickable
     def PopulateSpawns(self, cursor, numrows):
+        globals.model_list = list()
         for x in range(0, numrows):
             row = cursor.fetchone()
             s = loader.loadModel("models/cube.egg")
@@ -736,6 +737,7 @@ class World(DirectObject):
             csNode.node().addSolid(cs)
             s.setTag("name", row["name"])
             picker.makePickable(s)
+            globals.model_list.append(s)
 
     # Establishes a connection to the EQEmu database
     def ConnectToDatabase(self):
@@ -772,6 +774,9 @@ class World(DirectObject):
 
         base.camera.setPos(world.campos)
 
+    def GetCamera(self):
+        return base.camera
+
     ###################################
     # End
     ###################################
@@ -785,7 +790,7 @@ print 'starting zonewalk v' + VERSION
 world = World()
 world.load()
 
-world.InitCameraPosition()
+#world.InitCameraPosition()
 
 # Creates a Picker2 object in charge of setting spawn models as Pickable.
 picker = Picker2()
