@@ -724,20 +724,24 @@ class World(DirectObject):
     # Handles populating the zone with spawn data from the EQEmu DB
     # also makes each spawner model pickable
     def PopulateSpawns(self, cursor, numrows):
+        spawn_coords = list()
         globals.model_list = list()
         for x in range(0, numrows):
             row = cursor.fetchone()
-            s = loader.loadModel("models/cube.egg")
-            s.reparentTo(render)
-            s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
-            min,macks= s.getTightBounds()
-            radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
-            cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
-            csNode = s.attachNewNode(CollisionNode("modelCollide"))
-            csNode.node().addSolid(cs)
-            s.setTag("name", row["name"])
-            picker.makePickable(s)
-            globals.model_list.append(s)
+            point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
+            if point not in spawn_coords:
+                s = loader.loadModel("models/cube.egg")
+                s.reparentTo(render)
+                s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
+                min,macks= s.getTightBounds()
+                radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
+                cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
+                csNode = s.attachNewNode(CollisionNode("modelCollide"))
+                csNode.node().addSolid(cs)
+                s.setTag("name", row["name"])
+                picker.makePickable(s)
+                globals.model_list.append(s)
+                spawn_coords.append(point)
 
     # Establishes a connection to the EQEmu database
     def ConnectToDatabase(self):
