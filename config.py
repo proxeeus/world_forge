@@ -99,7 +99,7 @@ class Configurator():
         # set a few defaults
         self.config['xres'] = '1024'
         self.config['yres'] = '768'
-        self.config['default_zone'] = 'ecommons'
+        self.config['default_zone'] = 'freporte'
 
         # write config
         #self.saveConfig()

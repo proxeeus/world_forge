@@ -17,7 +17,7 @@ import wx.xrc
 import re
 import globals
 from panda3d.core import Vec3, Vec4, Point3, VBase4, BitMask32
-
+from math import pi, sin, cos, fabs
 pattern = "\(([^\)]+)\)"
 
 class SpawnsFrame ( wx.Frame ):
@@ -25,14 +25,14 @@ class SpawnsFrame ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 500,380 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( -1, -1 )
 		
 		self.m_menubar = wx.MenuBar( 0 )
 		self.m_fileMenu = wx.Menu()
-		self.m_menuItemQuit = wx.MenuItem( self.m_fileMenu, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
-		self.m_fileMenu.Append( self.m_menuItemQuit )
+		#self.m_menuItemQuit = wx.MenuItem( self.m_fileMenu, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
+		#self.m_fileMenu.Append( self.m_menuItemQuit )
 		
-		self.m_menubar.Append( self.m_fileMenu, u"File" ) 
+		#self.m_menubar.Append( self.m_fileMenu, u"File" ) 
 		
 		self.SetMenuBar( self.m_menubar )
 		
@@ -59,8 +59,15 @@ class SpawnsFrame ( wx.Frame ):
 			globals.selectedSpawnXYZ = found
 			globals.selectedSpawnPoint3D = Point3(float(coords[1]), float(coords[0]), float(coords[2]))
 			model = self.GetModelByXYZ(globals.selectedSpawnPoint3D, globals.model_list)
-			if model:
-				base.camera.reparentTo(model)
+		if model:
+			globals.hasClickedSpawn = True;
+			print "before dbl click"
+			print base.camera.getPos()
+			#base.camera.setPos(model.getPos())
+			print "after dblclick"
+			print base.camera.getPos()
+
+
 
 	def GetModelByXYZ(self, point3D, model_list):
 		print point3D

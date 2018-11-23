@@ -38,7 +38,8 @@ from math import pi, sin, cos, fabs
 
 from direct.gui.OnscreenText import OnscreenText 
 
-
+import time
+from threading import Thread
 import direct.directbase.DirectStart
 
 from panda3d.core import TextNode, PandaNode, NodePath
@@ -304,6 +305,7 @@ class World(DirectObject):
         
         # Add the spinCameraTask procedure to the task manager.
         # taskMgr.add(self.spinCameraTask, "SpinCameraTask")
+        globals.hasClickedSpawn = False;
         taskMgr.add(self.camTask, "camTask")
 
         self.toggleControls(1)
@@ -476,110 +478,115 @@ class World(DirectObject):
 
 
     def camTask(self, task):
-        # query the mouse
-        mouse_dx = 0
-        mouse_dy = 0
-
-
-        # if we have a mouse and the right button is depressed
-        if base.mouseWatcherNode.hasMouse():
-            if self.keyMap["mouse3"] != 0:
-                self.mouse_accum.update()
-            else:
-                self.mouse_accum.reset()
-
-        mouse_dx = self.mouse_accum.dx
-        mouse_dy = self.mouse_accum.dy
-
-        self.rXSpeed = fabs(self.mouse_accum.dx) * (self.cam_speed+1) * max(5 * 1000/self.xres,3)
-        self.rYSpeed = fabs(self.mouse_accum.dy) * (self.cam_speed+1) * max(3 * 1000/self.yres,1)
-            
-        if (self.keyMap["cam-left"]!=0 or mouse_dx < 0):
-            if self.rSpeed < 160:
-                self.rSpeed += 80 * globalClock.getDt()
-
-            if mouse_dx != 0:
-                self.camHeading += self.rXSpeed * globalClock.getDt()
-            else:
-                self.camHeading += self.rSpeed * globalClock.getDt()
-
-            if self.camHeading > 360.0:
-                self.camHeading = self.camHeading - 360.0
-        elif (self.keyMap["cam-right"]!=0 or mouse_dx > 0):
-            if self.rSpeed < 160:
-                self.rSpeed += 80 * globalClock.getDt()
-
-            if mouse_dx != 0:
-                self.camHeading -= self.rXSpeed * globalClock.getDt()
-            else:
-                self.camHeading -= self.rSpeed * globalClock.getDt()
-
-            if self.camHeading < 0.0:
-                self.camHeading = self.camHeading + 360.0
+        if globals.hasClickedSpawn:
+           print "TA MERE LA PUTE"
+           base.camera.setPos(globals.selectedSpawnPoint3D)
+           self.campos = globals.selectedSpawnPoint3D
+           globals.hasClickedSpawn = False
         else:
-            self.rSpeed = 80
+            # query the mouse
+            mouse_dx = 0
+            mouse_dy = 0
 
-        if mouse_dy > 0:
-            self.camPitch += self.rYSpeed * globalClock.getDt()
-        elif mouse_dy < 0:
-            self.camPitch -= self.rYSpeed * globalClock.getDt()
+
+            # if we have a mouse and the right button is depressed
+            if base.mouseWatcherNode.hasMouse():
+                if self.keyMap["mouse3"] != 0:
+                    self.mouse_accum.update()
+                else:
+                    self.mouse_accum.reset()
+
+            mouse_dx = self.mouse_accum.dx
+            mouse_dy = self.mouse_accum.dy
+
+            self.rXSpeed = fabs(self.mouse_accum.dx) * (self.cam_speed+1) * max(5 * 1000/self.xres,3)
+            self.rYSpeed = fabs(self.mouse_accum.dy) * (self.cam_speed+1) * max(3 * 1000/self.yres,1)
             
-        # set camera heading and pitch
-        base.camera.setHpr(self.camHeading, self.camPitch, 0)
+            if (self.keyMap["cam-left"]!=0 or mouse_dx < 0):
+                if self.rSpeed < 160:
+                    self.rSpeed += 80 * globalClock.getDt()
 
-        # viewer position (camera) movement control
-        v = render.getRelativeVector(base.camera, Vec3.forward())
-        if not self.flyMode:
-            v.setZ(0.0)
-        
-        move_speed = self.cam_speeds[self.cam_speed]
-        if self.keyMap["forward"] == 1:
-            self.campos += v * move_speed * globalClock.getDt()
-        if self.keyMap["backward"] == 1:
-            self.campos -= v * move_speed * globalClock.getDt()            
+                if mouse_dx != 0:
+                    self.camHeading += self.rXSpeed * globalClock.getDt()
+                else:
+                    self.camHeading += self.rSpeed * globalClock.getDt()
 
-        # actually move the camera
-        lastPos = base.camera.getPos()
-        base.camera.setPos(self.campos)
-        # self.plnp.setPos(self.campos)      # move the point light with the viewer position
+                if self.camHeading > 360.0:
+                    self.camHeading = self.camHeading - 360.0
+            elif (self.keyMap["cam-right"]!=0 or mouse_dx > 0):
+                if self.rSpeed < 160:
+                    self.rSpeed += 80 * globalClock.getDt()
 
-        # WALKMODE: simple collision detection
-        # we simply check a ray from slightly below the "eye point" straight down
-        # for geometry collisions and if there are any we detect the point of collision
-        # and adjust the camera's Z accordingly
-        if self.flyMode == 0:   
-            # move the camera to where it would be if it made the move 
-            # the colliderNode moves with it
-            # base.camera.setPos(self.campos)
-            # check for collissons
-            self.cTrav.traverse(render)
-            entries = []
-            for i in range(self.camGroundHandler.getNumEntries()):
-                entry = self.camGroundHandler.getEntry(i)
-                entries.append(entry)
-                # print 'collision'
-            entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(),
-                                         x.getSurfacePoint(render).getZ()))
-                                     
-            if (len(entries) > 0): # and (entries[0].getIntoNode().getName() == "terrain"):
-                # print len(entries)
-                self.campos.setZ(entries[0].getSurfacePoint(render).getZ()+self.eyeHeight)
+                if mouse_dx != 0:
+                    self.camHeading -= self.rXSpeed * globalClock.getDt()
+                else:
+                    self.camHeading -= self.rSpeed * globalClock.getDt()
+
+                if self.camHeading < 0.0:
+                    self.camHeading = self.camHeading + 360.0
             else:
-                self.campos = lastPos
-                base.camera.setPos(self.campos)
+                self.rSpeed = 80
+
+            if mouse_dy > 0:
+                self.camPitch += self.rYSpeed * globalClock.getDt()
+            elif mouse_dy < 0:
+                self.camPitch -= self.rYSpeed * globalClock.getDt()
+            
+            # set camera heading and pitch
+            base.camera.setHpr(self.camHeading, self.camPitch, 0)
+
+            # viewer position (camera) movement control
+            v = render.getRelativeVector(base.camera, Vec3.forward())
+            if not self.flyMode:
+                v.setZ(0.0)
         
-            #if (base.camera.getZ() < self.player.getZ() + 2.0):
-            #    base.camera.setZ(self.player.getZ() + 2.0)
+            move_speed = self.cam_speeds[self.cam_speed]
+            if self.keyMap["forward"] == 1:
+                self.campos += v * move_speed * globalClock.getDt()
+            if self.keyMap["backward"] == 1:
+                self.campos -= v * move_speed * globalClock.getDt()            
+
+            # actually move the camera
+            lastPos = base.camera.getPos()
+            base.camera.setPos(self.campos)
+            # self.plnp.setPos(self.campos)      # move the point light with the viewer position
+
+            # WALKMODE: simple collision detection
+            # we simply check a ray from slightly below the "eye point" straight down
+            # for geometry collisions and if there are any we detect the point of collision
+            # and adjust the camera's Z accordingly
+            if self.flyMode == 0:   
+                # move the camera to where it would be if it made the move 
+                # the colliderNode moves with it
+                # base.camera.setPos(self.campos)
+                # check for collissons
+                self.cTrav.traverse(render)
+                entries = []
+                for i in range(self.camGroundHandler.getNumEntries()):
+                    entry = self.camGroundHandler.getEntry(i)
+                    entries.append(entry)
+                    # print 'collision'
+                entries.sort(lambda x,y: cmp(y.getSurfacePoint(render).getZ(),
+                                             x.getSurfacePoint(render).getZ()))
+                                     
+                if (len(entries) > 0): # and (entries[0].getIntoNode().getName() == "terrain"):
+                    # print len(entries)
+                    self.campos.setZ(entries[0].getSurfacePoint(render).getZ()+self.eyeHeight)
+                else:
+                    self.campos = lastPos
+                    base.camera.setPos(self.campos)
+        
+                #if (base.camera.getZ() < self.player.getZ() + 2.0):
+                #    base.camera.setZ(self.player.getZ() + 2.0)
 
 
-        # update loc and hpr display
-        pos = base.camera.getPos()
-        hpr = base.camera.getHpr()
-        self.inst2.setText('Loc: %.2f, %.2f, %.2f' % (pos.getX(), pos.getY(), pos.getZ()))
-        self.inst3.setText('Hdg: %.2f, %.2f, %.2f' % (hpr.getX(), hpr.getY(), hpr.getZ()))
+            # update loc and hpr display
+            pos = base.camera.getPos()
+            hpr = base.camera.getHpr()
+            self.inst2.setText('Loc: %.2f, %.2f, %.2f' % (pos.getX(), pos.getY(), pos.getZ()))
+            self.inst3.setText('Hdg: %.2f, %.2f, %.2f' % (hpr.getX(), hpr.getY(), hpr.getZ()))
         return task.cont
 
-        
     def exitGame(self):           
         sys.exit(0)
 

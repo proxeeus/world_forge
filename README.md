@@ -14,3 +14,13 @@ As of right now, it is possible to load a fully-textured zone, explore it, and h
 the configured EQEmu DB.
 
 The next steps is to implement basic GUI components and update spawn data.
+
+Installation notes:
+
+- Download Panda3D
+- Install wxWidgets (the whl is in the /dependencies/ dir) with the following command 
+python -m pip install "path_to_whl"
+- Go to where wxWidgets has been installed (python_path\Lib\site-packages\)
+- find the folder wx-<version>-msw or similar 
+- move the wx folder from the above folder to \site-packages\
+- do more or less the same for MySqlPython
