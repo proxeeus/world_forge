@@ -479,7 +479,6 @@ class World(DirectObject):
 
     def camTask(self, task):
         if globals.hasClickedSpawn:
-           print "TA MERE LA PUTE"
            base.camera.setPos(globals.selectedSpawnPoint3D)
            self.campos = globals.selectedSpawnPoint3D
            globals.hasClickedSpawn = False
