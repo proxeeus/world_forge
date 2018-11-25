@@ -689,28 +689,6 @@ class World(DirectObject):
     #####################################
 
 
-    # What happens when a user clicks on a model
-    def onModelClick():
-        # Code adapted freely from http://www.panda3d.org/forums/viewtopic.php?t=12717
-        global picker, selected_model
-        namedNode, thePoint, rawNode = picker.pick()
-        if namedNode:
-            if "_mesh" not in namedNode.getName():  # rough test to avoid printing infos on global zone mesh (ie: "freporte_mesh")
-                name = namedNode.getName()
-                p = namedNode.getParent()
-                pos = p.getPos()
-                selected_model = namedNode
-                print namedNode.getName()
-                print "Collision Point: ", thePoint
-
-                namedNode.ls()
-            else:
-                print "Clicked location point (y, x, z):", thePoint
-                #selected_model.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
-
-                m.setPos(thePoint.getX(), thePoint.getY(), thePoint.getZ())
-                print "Moved !"
-
     # Handles populating the zone with spawn data from the EQEmu DB
     # also makes each spawner model pickable
     def PopulateSpawns(self, cursor, numrows):
