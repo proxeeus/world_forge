@@ -731,7 +731,7 @@ class World(DirectObject):
     # also makes each spawner model pickable
     def PopulateSpawns(self, cursor, numrows):
         spawn_coords = list()
-        globals.model_list = list()
+        globals.spawn_list = list()
         for x in range(0, numrows):
             row = cursor.fetchone()
             point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
@@ -749,7 +749,7 @@ class World(DirectObject):
                 csNode.node().addSolid(cs)
                 spawn.model.setTag("name", row["name"])
                 picker.makePickable(spawn.model)
-                globals.model_list.append(spawn.model)
+                globals.spawn_list.append(spawn)
                 spawn_coords.append(point)
 
     # Establishes a connection to the EQEmu database

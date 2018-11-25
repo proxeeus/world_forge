@@ -58,23 +58,22 @@ class SpawnsFrame ( wx.Frame ):
 			coords = found.split(",")
 			globals.selectedSpawnXYZ = found
 			globals.selectedSpawnPoint3D = Point3(float(coords[1]), float(coords[0]), float(coords[2]))
-			model = self.GetModelByXYZ(globals.selectedSpawnPoint3D, globals.model_list)
+			model = self.GetModelByXYZ(globals.selectedSpawnPoint3D, globals.spawn_list)
 		if model:
 			globals.hasClickedSpawn = True;
 			print "before dbl click"
 			print base.camera.getPos()
-			#base.camera.setPos(model.getPos())
 			print "after dblclick"
 			print base.camera.getPos()
 
 
 
-	def GetModelByXYZ(self, point3D, model_list):
+	def GetModelByXYZ(self, point3D, spawn_list):
 		print point3D
-		for model in model_list:
-			currentP3D = Point3(model.getX(), model.getY(), model.getZ())
+		for spawn in spawn_list:
+			currentP3D = Point3(spawn.model.getX(), spawn.model.getY(), spawn.model.getZ())
 			if point3D == currentP3D:
-				return model
+				return spawn.model
 
 	def __del__( self ):
 		pass
