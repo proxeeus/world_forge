@@ -30,29 +30,19 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 
 '''
 
-import os
-import sys, copy, struct
+import sys
 from math import pi, sin, cos, fabs
-
-
-
-from direct.gui.OnscreenText import OnscreenText 
-
-import time
-from threading import Thread
-import direct.directbase.DirectStart
 
 from panda3d.core import TextNode, PandaNode, NodePath
 from panda3d.core import CollisionTraverser,CollisionNode
 from panda3d.core import CollisionHandlerQueue,CollisionRay
-from panda3d.core import Filename,AmbientLight,DirectionalLight, PointLight
+from panda3d.core import AmbientLight,DirectionalLight, PointLight
 from panda3d.core import Vec3, Vec4, Point3, VBase4, BitMask32
-from panda3d.core import Fog, PStatClient
+from panda3d.core import Fog
 
 from direct.gui.OnscreenText import OnscreenText
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import WindowProperties
-
 
 from gui.modelpicker import ModelPicker
 from pandac.PandaModules import CollisionSphere
