@@ -352,18 +352,33 @@ class World(DirectObject):
             self.accept(cfg['control_backward']+"-up", self.setKey, ["backward",0])
             self.accept(cfg['toggle_edit-mode'], self.toggleEditMode)
             self.accept(cfg['toggle_insert-mode'], self.toggleInsertMode)
+            self.accept(cfg['toggle_explore-mode'], self.toggleExploreMode)
         else:
             messenger.clear()
+
+    def toggleDefaultMode(self):
+        globals.editMode = False
+        globals.insertMode = False
+        globals.exploreMode = True
+        print "STARTUP Explore mode ACTIVATED"
 
     def toggleEditMode(self):
         globals.editMode = True
         globals.insertMode = False
+        globals.exploreMode = False
         print "Edit mode ACTIVATED"
 
     def toggleInsertMode(self):
         globals.editMode = False
         globals.insertMode = True
+        globals.exploreMode = False
         print "Insert mode ACTIVATED"
+
+    def toggleExploreMode(self):
+        globals.editMode = False
+        globals.insertMode = False
+        globals.exploreMode = True
+        print "Explore mode ACTIVATED"
 
     def setSpeed(self, key, value):
         self.cam_speed = value
@@ -791,6 +806,8 @@ for x in range(0, numrows):
         spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
         spawnpoint = treeview.AppendItem(spawngroup, row["name"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
 
+# start in Explore mode by default
+world.toggleDefaultMode()
 #######
 
 while True:
