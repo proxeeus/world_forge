@@ -351,8 +351,6 @@ class World(DirectObject):
             self.accept(cfg['control_cam-left'], self.setKey, ["cam-left",1])
             self.accept(cfg['control_cam-right'], self.setKey, ["cam-right",1])
             self.accept(cfg['control_forward'], self.setKey, ["forward",1])
-            # Mouse1 should be for clicking on objects
-            #self.accept("mouse1", self.setKey, ["forward",1])
             self.accept("mouse3", self.setKey, ["mouse3",1])
             self.accept(cfg['control_backward'], self.setKey, ["backward",1])
         
@@ -360,13 +358,23 @@ class World(DirectObject):
             self.accept(cfg['control_cam-left']+"-up", self.setKey, ["cam-left",0])
             self.accept(cfg['control_cam-right']+"-up", self.setKey, ["cam-right",0])
             self.accept(cfg['control_forward']+"-up", self.setKey, ["forward",0])
-            # Mouse1 should be for clicking on objects
-            #self.accept("mouse1-up", self.setKey, ["forward",0])
             self.accept("mouse3-up", self.setKey, ["mouse3",0])
             self.accept(cfg['control_backward']+"-up", self.setKey, ["backward",0])
+            self.accept(cfg['toggle_edit-mode'], self.toggleEditMode)
+            self.accept(cfg['toggle_insert-mode'], self.toggleInsertMode)
         else:
             messenger.clear()
-            
+
+    def toggleEditMode(self):
+        globals.editMode = True
+        globals.insertMode = False
+        print "Edit mode ACTIVATED"
+
+    def toggleInsertMode(self):
+        globals.editMode = False
+        globals.insertMode = True
+        print "Insert mode ACTIVATED"
+
     def setSpeed(self, key, value):
         self.cam_speed = value
         self.setFlymodeText()
