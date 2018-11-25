@@ -88,21 +88,6 @@ class Configurator():
         if not os.path.exists(path):
             self.frmDialog.setStatus('Error, path invalid: '+path)
             return 0
-
-        # self.statusLabel['text'] = 'Loading default zone from path : '+textEntered
-        # self.result = textEntered
-        # self.done = 1
-
-        # user entered path exists: store it into config
-        self.config['basepath'] = path
-        
-        # set a few defaults
-        self.config['xres'] = '1024'
-        self.config['yres'] = '768'
-        self.config['default_zone'] = 'freporte'
-
-        # write config
-        #self.saveConfig()
         
         return 1    # let the dialog know it can exit
                 
