@@ -12,6 +12,7 @@ from direct.showbase import DirectObject
 from pandac.PandaModules import *
 from gui.picker import Picker
 import globals
+from components.Spawn import Spawn
 
 class ModelPicker(DirectObject.DirectObject):
    def __init__(self, topNode = None):
@@ -77,6 +78,28 @@ class ModelPicker(DirectObject.DirectObject):
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
+         #TODO PLEASE FOR THE LOVE OF GOD REFACTOR THIS
+         if globals.insertMode == True:
+            picker = Picker(render)
+            thePoint = picker.pick()
+            print thePoint
+            spawn = Spawn(000, "Toto")
+            spawn.model = loader.loadModel(spawn.modelname)
+            spawn.initmodel()
+            spawn.model.reparentTo(render)
+            spawn.initheadingfromdb(0)
+            spawn.placeintoworld(thePoint[1].getX(), thePoint[1].getY(), thePoint[1].getZ())
+            print thePoint[1].getY(), thePoint[1].getX(), thePoint[1].getZ()
+            min, macks = spawn.model.getTightBounds()
+            radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()]) / 2
+            cs = CollisionSphere(thePoint[1].getX(), thePoint[1].getY(), thePoint[1].getZ(), radius)
+            csNode = spawn.model.attachNewNode(CollisionNode("modelCollide"))
+            csNode.node().addSolid(cs)
+            spawn.model.setTag("name", "Toto")
+            self.makePickable(spawn.model)
+            globals.spawn_list.append(spawn)
+            #spawn_coords.append(point)
+            print "ptdr :') don't forget it's printed as Y X Z !"
       else:
          picker = Picker(render)
          # object already selected so we need to do some shit there and unset it
