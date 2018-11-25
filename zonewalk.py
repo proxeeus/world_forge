@@ -50,11 +50,10 @@ from panda3d.core import Vec3, Vec4, Point3, VBase4, BitMask32
 from panda3d.core import Fog, PStatClient
 
 from direct.gui.OnscreenText import OnscreenText
-from direct.actor.Actor import Actor
 from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import WindowProperties
 
-from gui.picker import Picker
+
 from gui.modelpicker import ModelPicker
 from pandac.PandaModules import CollisionSphere
 
@@ -67,6 +66,7 @@ import wx
 from gui.spawnerdialog import SpawnsFrame
 import globals
 import MySQLdb
+from components.Spawn import Spawn
 
 last_selected_model = None
 spawndialog = None
@@ -736,21 +736,20 @@ class World(DirectObject):
             row = cursor.fetchone()
             point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
             if point not in spawn_coords:
-                s = loader.loadModel("models/arrow.egg")
-                s.setScale(50,50,50)
-                s.setColor(0.6, 0.6, 1.0, 1.0)
-                s.reparentTo(render)
-                # Convert from EQEmu heading to 360-based heading
-                s.setH(row["Spawn2Heading"] / 512 * 360 - 90)
-                s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
-                min,macks= s.getTightBounds()
+                spawn = Spawn(row["Spawn2Id"], row["name"])
+                spawn.model = loader.loadModel(spawn.modelname)
+                spawn.initmodel()
+                spawn.model.reparentTo(render)
+                spawn.initheadingfromdb(row["Spawn2Heading"])
+                spawn.placeintoworld(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
+                min,macks = spawn.model.getTightBounds()
                 radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
                 cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
-                csNode = s.attachNewNode(CollisionNode("modelCollide"))
+                csNode = spawn.model.attachNewNode(CollisionNode("modelCollide"))
                 csNode.node().addSolid(cs)
-                s.setTag("name", row["name"])
-                picker.makePickable(s)
-                globals.model_list.append(s)
+                spawn.model.setTag("name", row["name"])
+                picker.makePickable(spawn.model)
+                globals.model_list.append(spawn.model)
                 spawn_coords.append(point)
 
     # Establishes a connection to the EQEmu database
@@ -770,7 +769,7 @@ class World(DirectObject):
     def GetDbSpawnData(self, connection):
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, s2.heading as Spawn2Heading, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
+        query = """SELECT nt.name, s2.id as Spawn2Id, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, s2.heading as Spawn2Heading, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
                 sg.delay as Spawngroup_delay FROM spawn2 s2
                 JOIN spawngroup sg ON sg.id = s2.spawngroupid
                 JOIN spawnentry se
