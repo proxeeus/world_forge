@@ -1,0 +1,7 @@
+/.idea
+/components/*.pyc
+/gui/*.pyc
+/gfx/*.pyc
+/file/*.pyc
+/*.pyc
+/net/*.pyc

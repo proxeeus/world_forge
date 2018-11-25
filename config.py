@@ -90,4 +90,3 @@ class Configurator():
             return 0
         
         return 1    # let the dialog know it can exit
-                

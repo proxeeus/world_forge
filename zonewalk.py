@@ -60,7 +60,6 @@ from pandac.PandaModules import CollisionSphere
 from zone import Zone
 from config import Configurator
 from gui.filedialog import FileDialog
-from net.client import UDPClientStream
 
 import wx
 from gui.spawnerdialog import SpawnsFrame
@@ -147,7 +146,6 @@ class MouseAccume(object):
 
 
 class World(DirectObject):
-
     def __init__(self):
         self.last_mousex = 0
         self.last_mousey = 0
@@ -203,12 +201,6 @@ class World(DirectObject):
         
         base.win.requestProperties( self.winprops ) 
         base.disableMouse()
-
-        # network test stuff
-        self.login_client = None
-        if 'testnet' in cfg:
-            if cfg['testnet'] == '1':
-                self.doLogin()
         
         # Post the instructions
         self.title = addTitle('zonewalk v.' + VERSION)
@@ -356,8 +348,6 @@ class World(DirectObject):
             self.accept(cfg['control_help'], self.displayKeyHelp)
             self.accept(cfg['control_flymode'], self.toggleFlymode)
             self.accept(cfg['control_reload-zone'], self.reloadZone)
-            # Deactivate this for now
-            #self.accept("z", self.saveDefaultZone)
             self.accept(cfg['control_cam-left'], self.setKey, ["cam-left",1])
             self.accept(cfg['control_cam-right'], self.setKey, ["cam-right",1])
             self.accept(cfg['control_forward'], self.setKey, ["forward",1])
@@ -614,9 +604,6 @@ class World(DirectObject):
             self.zone.update()
 
         taskMgr.step()
-   
-        if self.login_client != None:
-            self.login_client.update()  
         
         
     # ZONE loading ------------------------------------------------------------
@@ -641,26 +628,15 @@ class World(DirectObject):
         cfg = self.configurator.config
         cfg['xres'] = str(self.xres)
         cfg['yres'] = str(self.yres)
-        #self.configurator.saveConfig()
 
     # initial world load after bootup
     def load(self):       
         cfg = self.configurator.config
-        
-        if self.login_client != None:
-            return
             
         zone_name = cfg['default_zone']
+        globals.currentZone = zone_name
         basepath = cfg['basepath']
         self.loadZone(zone_name, basepath)
-    
-
-    # config save user interfacce
-    def saveDefaultZone(self):
-        if self.zone:
-            cfg = self.configurator.config
-            cfg['default_zone'] = self.zone.name
-            #self.configurator.saveConfig()
 
     # zone reload user interface
     
@@ -776,7 +752,7 @@ class World(DirectObject):
                 ON se.spawngroupid = sg.id
                 JOIN npc_types nt
                 ON nt.id = se.npcid
-                WHERE s2.zone = 'freporte'"""
+                WHERE s2.zone = '""" + globals.currentZone + "'"
         cursor.execute(query)
         return cursor
 
@@ -803,9 +779,7 @@ print 'starting zonewalk v' + VERSION
 world = World()
 world.load()
 
-#world.InitCameraPosition()
-
-# Creates a Picker2 object in charge of setting spawn models as Pickable.
+# Creates a ModelPicker object in charge of setting spawn models as Pickable.
 picker = ModelPicker()
 
 # Loads the various GUI components
