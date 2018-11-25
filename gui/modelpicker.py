@@ -85,6 +85,7 @@ class ModelPicker(DirectObject.DirectObject):
          print thePoint
          print self.lastSelectedObject.getTag("name")
          print "Heading: " ,self.lastSelectedObject.getH()
-         self.lastSelectedObject.setPos(thePoint)
+         if globals.editMode == True:
+            self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
          globals.spawndialog.SetTitle('lol title')
