@@ -13,7 +13,7 @@ from pandac.PandaModules import *
 from gui.picker import Picker
 import globals
 
-class Picker2(DirectObject.DirectObject):
+class ModelPicker(DirectObject.DirectObject):
    def __init__(self, topNode = None):
       #setup collision stuff
       self.topNode = topNode
@@ -48,8 +48,7 @@ class Picker2(DirectObject.DirectObject):
       newObj.setTag('pickable','true')
 
    #this function finds the closest object to the camera that has been hit by our ray
-   def getObjectHit(self, mpos): #mpos is the position of the mouse on the screen
-      self.pickedObj=None #be sure to reset this
+   def getObjectHit(self, mpos): #mpos is the position of the mouse on the screen      self.pickedObj=None #be sure to reset this
       self.pickerRay.setFromLens(base.camNode, mpos.getX(),mpos.getY())
       self.picker.traverse(render)
       if self.queue.getNumEntries() > 0:
@@ -85,6 +84,7 @@ class Picker2(DirectObject.DirectObject):
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
          print self.lastSelectedObject.getTag("name")
+         print "Heading: " ,self.lastSelectedObject.getH()
          self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
          globals.spawndialog.SetTitle('lol title')

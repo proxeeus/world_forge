@@ -55,7 +55,7 @@ from direct.showbase.DirectObject import DirectObject
 from pandac.PandaModules import WindowProperties
 
 from gui.picker import Picker
-from gui.picker2 import Picker2
+from gui.modelpicker import ModelPicker
 from pandac.PandaModules import CollisionSphere
 
 from zone import Zone
@@ -736,8 +736,12 @@ class World(DirectObject):
             row = cursor.fetchone()
             point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
             if point not in spawn_coords:
-                s = loader.loadModel("models/cube.egg")
+                s = loader.loadModel("models/arrow.egg")
+                s.setScale(50,50,50)
+                s.setColor(0.6, 0.6, 1.0, 1.0)
                 s.reparentTo(render)
+                # Convert from EQEmu heading to 360-based heading
+                s.setH(row["Spawn2Heading"] / 512 * 360 - 90)
                 s.setPos(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
                 min,macks= s.getTightBounds()
                 radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
@@ -766,7 +770,7 @@ class World(DirectObject):
     def GetDbSpawnData(self, connection):
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
+        query = """SELECT nt.name, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, s2.heading as Spawn2Heading, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
                 sg.delay as Spawngroup_delay FROM spawn2 s2
                 JOIN spawngroup sg ON sg.id = s2.spawngroupid
                 JOIN spawnentry se
@@ -803,7 +807,7 @@ world.load()
 #world.InitCameraPosition()
 
 # Creates a Picker2 object in charge of setting spawn models as Pickable.
-picker = Picker2()
+picker = ModelPicker()
 
 # Loads the various GUI components
 app = wx.App()

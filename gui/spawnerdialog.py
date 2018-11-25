@@ -25,11 +25,11 @@ class SpawnsFrame ( wx.Frame ):
 	def __init__( self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 500,380 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 		
-		self.SetSizeHints( -1, -1 )
+		self.SetSizeHints(-1, -1 )
 		
 		self.m_menubar = wx.MenuBar( 0 )
 		self.m_fileMenu = wx.Menu()
-		#self.m_menuItemQuit = wx.MenuItem( self.m_fileMenu, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
+		self.m_menuItemQuit = wx.MenuItem( self.m_fileMenu, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
 		#self.m_fileMenu.Append( self.m_menuItemQuit )
 		
 		#self.m_menubar.Append( self.m_fileMenu, u"File" ) 
