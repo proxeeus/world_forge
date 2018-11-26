@@ -1,7 +1,7 @@
 '''
 config.py
 
-Zonewalk configuration support
+World Forge configuration support
 gsk dec 2012
 
 
@@ -46,7 +46,7 @@ class Configurator():
         self.frmDialog = None
         
         try:
-            self.cfg_file = open('zonewalk.cfg')
+            self.cfg_file = open('worldforge.cfg')
         except IOError as e:
             pass
             
@@ -73,7 +73,7 @@ class Configurator():
     
     def saveConfig(self):
         try:
-            self.cfg_file = open('zonewalk.cfg', 'w')
+            self.cfg_file = open('worldforge.cfg', 'w')
         except IOError as e:
             print 'ERROR: cannot write configuration file'
             return

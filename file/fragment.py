@@ -1,7 +1,7 @@
 '''
 fragment
 
-zonewalk wld file fragment processing
+World Forge wld file fragment processing
 (c) gsk 2012
 
 

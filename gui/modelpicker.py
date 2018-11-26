@@ -96,4 +96,3 @@ class ModelPicker(DirectObject.DirectObject):
          if globals.editMode == True:
             self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
-         globals.spawndialog.SetTitle('lol title')

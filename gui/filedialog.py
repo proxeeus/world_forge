@@ -1,7 +1,7 @@
 '''
 filedialog
 
-zonewalk simple user interface
+World Forge simple user interface
 (c) gsk 2012
 
 

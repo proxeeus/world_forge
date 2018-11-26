@@ -1,7 +1,8 @@
 '''
-zonewalk
+World Forge
+based on the Panda zonewalk engine
 
-zonewalk.py main driver
+worldforge.py main driver
 gsk December 2012
 
 LICENSE:
@@ -157,7 +158,7 @@ class World(DirectObject):
                         pos=(-1.3, .4-i*.05), align=TextNode.ALeft, scale = .035, parent = self.consoleNode))
 
         # Configuration
-        self.consoleOut('zonewalk v.%s loading configuration' % VERSION)
+        self.consoleOut('World Forge v.%s loading configuration' % VERSION)
         self.configurator = Configurator(self)
         cfg = self.configurator.config
         resaveRes = False
@@ -186,14 +187,14 @@ class World(DirectObject):
 
         # application window setup
         base.win.setClearColor(Vec4(0,0,0,1))
-        self.winprops.setTitle( 'zonewalk')
+        self.winprops.setTitle( 'World Forge')
         self.winprops.setSize(self.xres, self.yres) 
         
         base.win.requestProperties( self.winprops ) 
         base.disableMouse()
         
         # Post the instructions
-        self.title = addTitle('zonewalk v.' + VERSION)
+        self.title = addTitle('World Forge v.' + VERSION)
         self.inst0 = addInstructions(0.95, "[FLYMODE][1]")
         self.inst1 = addInstructions(-0.95, "Camera control with WSAD/mouselook. Press K for hotkey list, ESC to exit.")
         self.inst2 = addInstructions(0.9,  "Loc:")
@@ -440,7 +441,7 @@ class World(DirectObject):
         pos -= 0.05
         self.kh.append(OnscreenText(text=msg, style=1, fg=(1,1,1,1),
                         pos=(-0.5, pos), align=TextNode.ALeft, scale = .04))
-        msg = 'ESC: exit zonewalk'
+        msg = 'ESC: exit World Forge'
         pos -= 0.05
         self.kh.append(OnscreenText(text=msg, style=1, fg=(1,1,1,1),
                         pos=(-0.5, pos), align=TextNode.ALeft, scale = .04))
@@ -765,7 +766,7 @@ class World(DirectObject):
 # main
 # ------------------------------------------------------------------------------
 
-print 'starting zonewalk v' + VERSION
+print 'starting World Forge v' + VERSION
 
 world = World()
 world.load()

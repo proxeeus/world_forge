@@ -1,7 +1,7 @@
 '''
 s3dfile
 
-Python .S3D file support for zonewalk
+Python .S3D file support for World Forge
 (c) gsk 2012
 
 

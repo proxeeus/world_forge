@@ -1,7 +1,7 @@
 '''
 wldfile
 
-Python .WLD file support for zonewalk
+Python .WLD file support for World Forge
 
 (c) gsk 2012
 
