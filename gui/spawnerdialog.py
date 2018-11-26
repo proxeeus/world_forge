@@ -1,40 +1,18 @@
-# -*- coding: utf-8 -*- 
-
-###########################################################################
-## Python code generated with wxFormBuilder (version Oct 18 2017)
-## http://www.wxformbuilder.org/
-##
-## PLEASE DO *NOT* EDIT THIS FILE!
-###########################################################################
+# -*- coding: utf-8 -*-
 
 import wx
 import wx.xrc
-
-###########################################################################
-## Class SpawnsFrame
-###########################################################################
-
 import re
 import globals
-from panda3d.core import Vec3, Vec4, Point3, VBase4, BitMask32
-from math import pi, sin, cos, fabs
+from panda3d.core import Point3
 pattern = "\(([^\)]+)\)"
 
 class SpawnsFrame ( wx.Frame ):
 	
-	def __init__( self, parent ):
+	def __init__(self, parent ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 500,380 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
-		
-		self.SetSizeHints(-1, -1 )
-		
-		self.m_menubar = wx.MenuBar( 0 )
-		self.m_fileMenu = wx.Menu()
-		self.m_menuItemQuit = wx.MenuItem( self.m_fileMenu, wx.ID_ANY, u"Quit", wx.EmptyString, wx.ITEM_NORMAL )
-		#self.m_fileMenu.Append( self.m_menuItemQuit )
-		
-		#self.m_menubar.Append( self.m_fileMenu, u"File" ) 
-		
-		self.SetMenuBar( self.m_menubar )
+
+		self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 		
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
