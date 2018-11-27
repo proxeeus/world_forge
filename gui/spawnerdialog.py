@@ -13,15 +13,7 @@ class SpawnsFrame ( wx.Frame ):
 		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 500,380 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
-
-		menubar = wx.MenuBar()
-		fileMenu = wx.Menu()
-		fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
-		menubar.Append(fileMenu, '&File')
-		self.SetMenuBar(menubar)
-
-		self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
-
+		self.initmenubar()
 		bSizer1 = wx.BoxSizer( wx.VERTICAL )
 		
 		self.m_treeCtrlSpawnGroups = wx.TreeCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( 15000,10000 ), wx.TR_DEFAULT_STYLE )
@@ -34,6 +26,17 @@ class SpawnsFrame ( wx.Frame ):
 		
 		self.Centre( wx.BOTH )
 
+
+	### EVENTS
+
+	def initmenubar(self):
+		menubar = wx.MenuBar()
+		fileMenu = wx.Menu()
+		fileItem = fileMenu.Append(wx.ID_EXIT, 'Quit', 'Quit application')
+		menubar.Append(fileMenu, '&File')
+		self.SetMenuBar(menubar)
+
+		self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
 
 	def OnQuit(self,e):
 		exit(0)
