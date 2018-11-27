@@ -87,12 +87,14 @@ class ModelPicker(DirectObject.DirectObject):
             spawn.addnewspawntoworld(thePoint, self)
       else:
          picker = Picker(render)
-         # object already selected so we need to do some shit there and unset it
+         # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF
+         # ALL EXISTING SPAWNS AND RETURN THAT
 
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
          print self.lastSelectedObject.getTag("name")
          print "Heading: " ,self.lastSelectedObject.getH()
+         #globals.spawndialog.m_spawnGroupNameTextCtrl.SetValue("ta grosse mere")
          if globals.editMode == True:
             self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None
