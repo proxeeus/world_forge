@@ -10,7 +10,7 @@ pattern = "\(([^\)]+)\)"
 class SpawnsFrame ( wx.Frame ):
 	
 	def __init__(self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 818,497 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"Spawns", pos = wx.DefaultPosition, size = wx.Size( 850,540 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
 		self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 		self.initmenubar()
@@ -48,9 +48,56 @@ class SpawnsFrame ( wx.Frame ):
 		# Spawngroup Spawn Limit
 		self.m_spawnGroupSpawnLimitStaticText = wx.StaticText(self, wx.ID_ANY, "Spawn Limit", wx.Point(465, 129), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupSpawnLimitTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(552, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
-		# Spawngroup Change
+		# Spawngroup Chance
 		self.m_spawnGroupChanceStaticText = wx.StaticText(self, wx.ID_ANY, "Chance", wx.Point(613, 129), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupChanceTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(679, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+
+		# Spawnentry
+		self.m_spawnEntryStaticText = wx.StaticText(self, wx.ID_ANY, "Spawnentry", wx.Point(300, 245), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		# Spawnentry Npc ID
+		self.m_spawnEntryNpcIdStaticText = wx.StaticText(self, wx.ID_ANY, "NPC Id", wx.Point(320, 268), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryNpcIdTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(379, 265), wx.Size(103, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Coords
+		self.m_spawnEntryXStaticText = wx.StaticText(self, wx.ID_ANY, "X", wx.Point(493, 267), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryXTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(516, 265), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryYStaticText = wx.StaticText(self, wx.ID_ANY, "Y", wx.Point(558, 268), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryYTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(581, 265), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryZStaticText = wx.StaticText(self, wx.ID_ANY, "Z", wx.Point(622, 267), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryZTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(645, 265), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryHeadingStaticText = wx.StaticText(self, wx.ID_ANY, "Heading", wx.Point(687, 268), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryHeadingTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(753, 265), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Respawn
+		self.m_spawnEntryRespawnStaticText = wx.StaticText(self, wx.ID_ANY, "Respawn", wx.Point(307, 300), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryRespawnTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "600", wx.Point(379, 297), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Variance
+		self.m_spawnEntryVarianceStaticText = wx.StaticText(self, wx.ID_ANY, "Variance", wx.Point(444, 300), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryVarianceTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(536, 297), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Pathgrid
+		self.m_spawnEntryPathGridStaticText = wx.StaticText(self, wx.ID_ANY, "Path grid", wx.Point(578, 302), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryPathGridTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(645, 299), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Condition
+		self.m_spawnEntryConditionStaticText = wx.StaticText(self, wx.ID_ANY, "Condition", wx.Point(306, 335), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryConditionTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(378, 332), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Condition Value
+		self.m_spawnEntryConditionValueStaticText = wx.StaticText(self, wx.ID_ANY, "Condition Value", wx.Point(423, 335), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryConditionValueTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(536, 330), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Version
+		self.m_spawnEntryVersionStaticText = wx.StaticText(self, wx.ID_ANY, "Version", wx.Point(583, 335), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryVersionTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(645, 332), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Enabled
+		self.m_spawnEntryEnabledStaticText = wx.StaticText(self, wx.ID_ANY, "Enabled", wx.Point(313, 367), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryEnabledTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "1", wx.Point(378, 364), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Animation
+		self.m_spawnEntryAnimationStaticText = wx.StaticText(self, wx.ID_ANY, "Animation", wx.Point(456, 367), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryAnimationTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "1", wx.Point(536, 362), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		# Spawnentry Zone
+		self.m_spawnEntryZoneStaticText = wx.StaticText(self, wx.ID_ANY, "Zone", wx.Point(574, 367), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryZoneTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "", wx.Point(621, 364), wx.Size(168, 22), wx.TR_DEFAULT_STYLE)
+
+		# Buttons
+		self.m_AddSpawnButton = wx.Button(self, wx.ID_ANY, "Add",  wx.Point(511, 422), wx.DefaultSize, 0, wx.DefaultValidator)
+		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Delete", wx.Point(594, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
+		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Save", wx.Point(717, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
 
 		treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
