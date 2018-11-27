@@ -150,11 +150,13 @@ class Model():
             if i > 0:
                 f2d = wld.getFragment(f10.entries[i][3])    # entry[3] -> fragRef2
                 # f2d.dump()
-                f36 = wld.getFragment(f2d.fragRef)
+                if hasattr(f2d, 'fragRef'):
+                    f36 = wld.getFragment(f2d.fragRef)
                 # f36.dump()
 
                 m = Mesh(self.name+'_mesh_'+str(i))
-                m.buildFromFragment(f36, self.wld_container, False)
+                if hasattr(f2d, 'fragRef'):
+                    m.buildFromFragment(f36, self.wld_container, False)
                 m.root.reparentTo(root_mesh.root)
             else: # the root node (index 0) does not have a mesh
                 m = Mesh(self.name+'_mesh_'+str(i))  # empty dummy mesh
