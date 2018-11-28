@@ -78,6 +78,11 @@ class ModelPicker(DirectObject.DirectObject):
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
+         # Try to update the UI
+         if self.lastSelectedObject:
+            selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
+            if selectedspawn:
+               globals.spawndialog.UpdateGUI(selectedspawn)
          # If we are in Insert Mode, we'll insert a new spawn point into the world
          if globals.insertMode == True:
             picker = Picker(render)
@@ -92,9 +97,12 @@ class ModelPicker(DirectObject.DirectObject):
 
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
-         print self.lastSelectedObject.getTag("name")
+         print self.lastSelectedObject.getTag("NpcName")
          print "Heading: " ,self.lastSelectedObject.getH()
          #globals.spawndialog.m_spawnGroupNameTextCtrl.SetValue("ta grosse mere")
+         selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
+         if selectedspawn:
+            globals.spawndialog.UpdateGUI(selectedspawn)
          if globals.editMode == True:
             self.lastSelectedObject.setPos(thePoint)
          self.lastSelectedObject = None

@@ -53,7 +53,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnGroupChanceTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(679, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 
 		# Spawnentry
-		self.m_spawnEntryStaticText = wx.StaticText(self, wx.ID_ANY, "Spawnentry", wx.Point(300, 245), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryStaticText = wx.StaticText(self, wx.ID_ANY, "Spawnentry", wx.Point(300, 245), wx.Size(168, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Npc ID
 		self.m_spawnEntryNpcIdStaticText = wx.StaticText(self, wx.ID_ANY, "NPC Id", wx.Point(320, 268), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnEntryNpcIdTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(379, 265), wx.Size(103, 22), wx.TR_DEFAULT_STYLE)
@@ -140,6 +140,35 @@ class SpawnsFrame ( wx.Frame ):
 			print "after dblclick"
 			print base.camera.getPos()
 
+
+	def UpdateGUI(self,spawn):
+		self.m_spawnGroupNameTextCtrl.SetValue(spawn.spawngroup_name)
+		self.m_spawnEntryStaticText.SetLabel(spawn.spawnentry_npcname)
+		self.m_spawnGroupMinXTextCtrl.SetValue(str(spawn.spawngroup_minx))
+		self.m_spawnGroupMaxXTextCtrl.SetValue(str(spawn.spawngroup_maxx))
+		self.m_spawnGroupMMinYTextCtrl.SetValue(str(spawn.spawngroup_miny))
+		self.m_spawnGroupMaxYTextCtrl.SetValue(str(spawn.spawngroup_maxy))
+		self.m_spawnGroupDistTextCtrl.SetValue(str(spawn.spawngroup_dist))
+		self.m_spawnGroupMinDelayTextCtrl.SetValue(str(spawn.spawngroup_mindelay))
+		self.m_spawnGroupDelayTextCtrl.SetValue(str(spawn.spawngroup_delay))
+		self.m_spawnGroupDespawnTextCtrl.SetValue(str(spawn.spawngroup_despawn))
+		self.m_spawnGroupDespawnTimerTextCtrl.SetValue(str(spawn.spawngroup_despawntimer))
+		self.m_spawnGroupSpawnLimitTextCtrl.SetValue(str(spawn.spawngroup_spawnlimit))
+		self.m_spawnGroupChanceTextCtrl.SetValue(str(spawn.spawngroup_chance))
+		self.m_spawnEntryNpcIdTextCtrl.SetValue(str(spawn.spawnentry_npcid))
+		self.m_spawnEntryXTextCtrl.SetValue(str(spawn.spawnentry_x))
+		self.m_spawnEntryYTextCtrl.SetValue(str(spawn.spawnentry_y))
+		self.m_spawnEntryZTextCtrl.SetValue(str(spawn.spawnentry_z))
+		self.m_spawnEntryHeadingTextCtrl.SetValue(str(spawn.spawnentry_heading))
+		self.m_spawnEntryRespawnTextCtrl.SetValue(str(spawn.spawnentry_respawn))
+		self.m_spawnEntryVarianceTextCtrl.SetValue(str(spawn.spawnentry_variance))
+		self.m_spawnEntryPathGridTextCtrl.SetValue(str(spawn.spawnentry_pathgrid))
+		self.m_spawnEntryConditionTextCtrl.SetValue(str(spawn.spawnentry_condition))
+		self.m_spawnEntryConditionValueTextCtrl.SetValue(str(spawn.spawnentry_condvalue))
+		self.m_spawnEntryVersionTextCtrl.SetValue(str(spawn.spawnentry_version))
+		self.m_spawnEntryEnabledTextCtrl.SetValue(str(spawn.spawnentry_enabled))
+		self.m_spawnEntryAnimationTextCtrl.SetValue(str(spawn.spawnentry_animation))
+		self.m_spawnEntryZoneTextCtrl.SetValue(str(spawn.spawnentry_zone))
 
 
 	def GetModelByXYZ(self, point3D, spawn_list):

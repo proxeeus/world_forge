@@ -704,7 +704,8 @@ class World(DirectObject):
             row = cursor.fetchone()
             point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
             if point not in spawn_coords:
-                spawn = Spawn(row["Spawn2Id"], row["name"])
+                spawn = Spawn()
+                self.InitSpawnData(spawn, row)
                 spawn.model = loader.loadModel(spawn.modelname)
                 spawn.initmodel()
                 spawn.model.reparentTo(render)
@@ -715,10 +716,14 @@ class World(DirectObject):
                 cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
                 csNode = spawn.model.attachNewNode(CollisionNode("modelCollide"))
                 csNode.node().addSolid(cs)
-                spawn.model.setTag("name", row["name"])
+                # TODO: ADD MORE TAGS??
+                spawn.model.setTag("name", row["NpcName"])
+                spawn.model.setTag("spawngroup_name", row["spawngroup_name"])
+                spawn.model.setTag("spawn2id", str(row["Spawn2Id"]))
                 picker.makePickable(spawn.model)
                 globals.spawn_list.append(spawn)
                 spawn_coords.append(point)
+
 
     # Establishes a connection to the EQEmu database
     def ConnectToDatabase(self):
@@ -737,8 +742,14 @@ class World(DirectObject):
     def GetDbSpawnData(self, connection):
         cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """SELECT nt.name, s2.id as Spawn2Id, s2.zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, s2.heading as Spawn2Heading, sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX, sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
-                sg.delay as Spawngroup_delay FROM spawn2 s2
+        query = """SELECT nt.name as NpcName, nt.id as NpcId, s2.id as Spawn2Id, s2.zone as Spawn2Zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, 
+                s2.heading as Spawn2Heading, s2.respawntime as Spawn2Respawn, s2.variance as Spawn2Variance, s2._condition as Spawn2Condition,
+                s2.cond_value as Spawn2CondValue, s2.pathgrid as Spawn2Grid, s2.enabled as Spawn2Enabled,
+                s2.version as Spawn2Version, s2.animation as Spawn2Animation,
+                sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX,
+                sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
+                sg.delay as Spawngroup_delay, sg.despawn_timer as Spawngroup_despawntimer,
+                sg.spawn_limit as Spawngroup_spawnlimit, se.chance as Spawnentry_chance FROM spawn2 s2
                 JOIN spawngroup sg ON sg.id = s2.spawngroupid
                 JOIN spawnentry se
                 ON se.spawngroupid = sg.id
@@ -747,6 +758,41 @@ class World(DirectObject):
                 WHERE s2.zone = '""" + globals.currentZone + "'"
         cursor.execute(query)
         return cursor
+
+    # Initializes a spawn object with database values
+    def InitSpawnData(self, spawn, row):
+        spawn.spawngroup_id = row["Spawngroup_id"]
+        spawn.spawngroup_name = row["spawngroup_name"]
+        spawn.spawngroup_minx = row["Spawngroup_minX"]
+        spawn.spawngroup_maxx= row["Spawngroup_maxX"]
+        spawn.spawngroup_miny = row["Spawngroup_minY"]
+        spawn.spawngroup_maxy = row["Spawngroup_maxY"]
+        spawn.spawngroup_dist = row["Spawngroup_dist"]
+        spawn.spawngroup_mindelay = row["Spawngroup_mindelay"]
+        spawn.spawngroup_delay = row["Spawngroup_delay"]
+        spawn.spawngroup_despawn = row["Spawngroup_despawntimer"]
+        spawn.spawngroup_despawntimer = row["Spawngroup_despawntimer"]
+        spawn.spawngroup_spawnlimit = row["Spawngroup_spawnlimit"]
+
+
+        spawn.spawnentry_id = row["Spawn2Id"]
+        spawn.spawnentry_npcid = row["NpcId"]
+        spawn.spawnentry_npcname = row["NpcName"]
+        spawn.spawnentry_chance = row["Spawnentry_chance"]
+        spawn.spawnentry_x = row["Spawn2X"]
+        spawn.spawnentry_y = row["Spawn2Y"]
+        spawn.spawnentry_z = row["Spawn2Z"]
+        spawn.spawnentry_heading = row["Spawn2Heading"]
+        spawn.spawnentry_respawn = row["Spawn2Respawn"]
+        spawn.spawnentry_variance = row["Spawn2Variance"]
+        spawn.spawnentry_pathgrid = row["Spawn2Grid"]
+        spawn.spawnentry_condition = row["Spawn2Condition"]
+        spawn.spawnentry_condvalue = row["Spawn2CondValue"]
+        spawn.spawnentry_version = row["Spawn2Version"]
+        spawn.spawnentry_enabled = row["Spawn2Enabled"]
+        spawn.spawnentry_animation = row["Spawn2Animation"]
+        spawn.spawnentry_zone = row["Spawn2Zone"]
+
 
     # Initializes the camera position upon startup
     def InitCameraPosition(self):
@@ -802,10 +848,10 @@ for x in range(0, numrows):
     result = globals.spawndialog.GetItemByLabel(treeview, row["spawngroup_name"], treeview.GetRootItem())
     if result.IsOk():
         #spawngroup = treeview.AppendItem(result, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(result, row["name"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
+        spawnpoint = treeview.AppendItem(result, row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
     else:
         spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(spawngroup, row["name"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
+        spawnpoint = treeview.AppendItem(spawngroup, row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
 
 # start in Explore mode by default
 world.toggleDefaultMode()

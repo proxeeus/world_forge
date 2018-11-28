@@ -4,4 +4,9 @@ def init():
 
 
 def addspawntolist(spawn):
-    globals.spawn_list.append(spawn)
+    spawn_list.append(spawn)
+
+def getspawnfromglobalspawnsbyname(spawn2Id):
+    for x in spawn_list:
+        if str(x.spawnentry_id) == spawn2Id:
+            return x
