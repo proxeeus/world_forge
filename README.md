@@ -1,4 +1,4 @@
-# spawn_tool (temp name)
+# World Forge
 Fork of Panda_Zonewalk, the goal is to develop an EQEmu World Editor (spawns, waypoints etc).
 
 The rough idea as of now would be to have a tool capable of:
