@@ -88,7 +88,7 @@ class ModelPicker(DirectObject.DirectObject):
             picker = Picker(render)
             thePoint = picker.pick()
             print thePoint
-            spawn = Spawn(000, "Toto")
+            spawn = Spawn()
             spawn.addnewspawntoworld(thePoint, self)
       else:
          picker = Picker(render)

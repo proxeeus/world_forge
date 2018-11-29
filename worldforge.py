@@ -56,6 +56,7 @@ import wx
 from gui.spawnerdialog import SpawnsFrame
 import globals
 import MySQLdb
+from components.database import Database
 from components.Spawn import Spawn
 
 last_selected_model = None
@@ -724,41 +725,6 @@ class World(DirectObject):
                 globals.spawn_list.append(spawn)
                 spawn_coords.append(point)
 
-
-    # Establishes a connection to the EQEmu database
-    def ConnectToDatabase(self):
-        configurator = Configurator(world)
-        cfg = configurator.config
-        conn = MySQLdb.Connection(
-            host=cfg['host'],
-            user=cfg['user'],
-            passwd=cfg['password'],
-            db=cfg['db'])
-
-        return conn
-
-    # Queries the Database in order to get spawn data
-    # (this should be refactored at some point)
-    def GetDbSpawnData(self, connection):
-        cursor = connection.cursor(MySQLdb.cursors.DictCursor)
-
-        query = """SELECT nt.name as NpcName, nt.id as NpcId, s2.id as Spawn2Id, s2.zone as Spawn2Zone, s2.x as Spawn2X, s2.y as Spawn2Y, s2.z as Spawn2Z, 
-                s2.heading as Spawn2Heading, s2.respawntime as Spawn2Respawn, s2.variance as Spawn2Variance, s2._condition as Spawn2Condition,
-                s2.cond_value as Spawn2CondValue, s2.pathgrid as Spawn2Grid, s2.enabled as Spawn2Enabled,
-                s2.version as Spawn2Version, s2.animation as Spawn2Animation,
-                sg.name as spawngroup_name,sg.id as Spawngroup_id, sg.min_x as Spawngroup_minX, sg.max_x as Spawngroup_maxX,
-                sg.min_y as Spawngroup_minY, sg.max_y as Spawngroup_maxY, sg.dist as Spawngroup_dist, sg.mindelay as Spawngroup_mindelay,
-                sg.delay as Spawngroup_delay, sg.despawn_timer as Spawngroup_despawntimer,
-                sg.spawn_limit as Spawngroup_spawnlimit, se.chance as Spawnentry_chance FROM spawn2 s2
-                JOIN spawngroup sg ON sg.id = s2.spawngroupid
-                JOIN spawnentry se
-                ON se.spawngroupid = sg.id
-                JOIN npc_types nt
-                ON nt.id = se.npcid
-                WHERE s2.zone = '""" + globals.currentZone + "'"
-        cursor.execute(query)
-        return cursor
-
     # Initializes a spawn object with database values
     def InitSpawnData(self, spawn, row):
         spawn.spawngroup_id = row["Spawngroup_id"]
@@ -816,7 +782,8 @@ print 'starting World Forge v' + VERSION
 
 world = World()
 world.load()
-
+configurator = Configurator(world)
+cfg = configurator.config
 # Creates a ModelPicker object in charge of setting spawn models as Pickable.
 picker = ModelPicker()
 
@@ -827,9 +794,10 @@ globals.spawndialog.Show()
 #
 
 # Connects to the database
-connection = world.ConnectToDatabase()
+database = Database(cfg['host'], cfg['user'], cfg['password'], cfg['port'], cfg['db'])
+connection = database.ConnectToDatabase()
 # Gets spawn data for the current zone
-cursor = world.GetDbSpawnData(connection)
+cursor = database.GetDbSpawnData()
 
 numrows = cursor.rowcount
 
@@ -838,7 +806,7 @@ world.PopulateSpawns(cursor, numrows)
 
 # NEEDS REFACTORING
 # Populates the spawns treeview
-cursor = world.GetDbSpawnData(connection)
+cursor = database.GetDbSpawnData()
 numrows = cursor.rowcount
 treeview = globals.spawndialog.GetSpawnsTreeView
 root = treeview.AddRoot('Spawns for this zone')
