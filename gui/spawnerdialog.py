@@ -56,7 +56,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnEntryStaticText = wx.StaticText(self, wx.ID_ANY, "Spawnentry", wx.Point(300, 245), wx.Size(168, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Npc ID
 		self.m_spawnEntryNpcIdStaticText = wx.StaticText(self, wx.ID_ANY, "NPC Id", wx.Point(320, 268), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnEntryNpcIdTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(379, 265), wx.Size(103, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryNpcIdTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(379, 265), wx.Size(75, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Coords
 		self.m_spawnEntryXStaticText = wx.StaticText(self, wx.ID_ANY, "X", wx.Point(493, 267), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnEntryXTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(516, 265), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)

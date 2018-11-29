@@ -9,6 +9,9 @@ class Database:
     db = ""
     conn = None
 
+    lastinsertedspawn2id = 0
+    lastinsertedspawngroupid = 0
+
     def __init__(self, host, user, password, port, db):
         self.host = host
         self.user = user
@@ -47,3 +50,46 @@ class Database:
                 WHERE s2.zone = '""" + globals.currentZone + "'"
         cursor.execute(query)
         return cursor
+
+    # Gets the next available id value for the Spawn2 table
+    def GetNextSpawn2Id(self):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT * FROM spawn2 ORDER BY ID DESC LIMIT 1"
+        cursor.execute(query)
+
+        row = cursor.fetchone()
+        lastId = 0
+        if row:
+            lastId = row["id"] + 1
+        return lastId
+
+    # Gets the next available id value for the Spawngroup table
+    def GetNextSpawnGroupId(self):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT * FROM spawngroup ORDER BY ID DESC LIMIT 1"
+        cursor.execute(query)
+
+        row = cursor.fetchone()
+        lastId = 0
+        if row:
+            lastId = row["id"] + 1
+        return lastId
+
+    # Inserts a new row into the Spawn2 table with the provided Spawn data
+    def InsertNewSpawn(self, spawn):
+
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """INSERT INTO spawn2(spawngroupID,zone, version, x,y,z,heading,respawntime,variance,pathgrid,_condition,condvalue,enabled, 
+        animation) VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,,%s,%s);"""
+        values = (spawn.spawngroup_id ,spawn.spawnentry_zone,  spawn.spawnentry_version ,spawn.spawnentry_x,spawn.spawnentry_y ,spawn.spawnentry_z , spawn.spawnentry_heading,spawn.spawnentry_respawn ,spawn.spawnentry_variance ,spawn.spawnentry_pathgrid ,spawn.spawnentry_condition ,spawn.spawnentry_condvalue ,spawn.spawnentry_enabled ,spawn.spawnentry_animation )
+        cursor.execute(query, values)
+
+        self.conn.commit()
+        print("1 record inserted, ID:", cursor.lastrowid)
+        self.lastinsertedspawn2id = cursor.lastrowid
+
+
+

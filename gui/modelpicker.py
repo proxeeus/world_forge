@@ -12,7 +12,7 @@ from direct.showbase import DirectObject
 from pandac.PandaModules import *
 from gui.picker import Picker
 import globals
-from components.Spawn import Spawn
+from components.spawn import Spawn
 
 class ModelPicker(DirectObject.DirectObject):
    def __init__(self, topNode = None):

@@ -57,7 +57,7 @@ from gui.spawnerdialog import SpawnsFrame
 import globals
 import MySQLdb
 from components.database import Database
-from components.Spawn import Spawn
+from components.spawn import Spawn
 
 last_selected_model = None
 spawndialog = None
@@ -794,10 +794,10 @@ globals.spawndialog.Show()
 #
 
 # Connects to the database
-database = Database(cfg['host'], cfg['user'], cfg['password'], cfg['port'], cfg['db'])
-connection = database.ConnectToDatabase()
+globals.database = Database(cfg['host'], cfg['user'], cfg['password'], cfg['port'], cfg['db'])
+connection = globals.database.ConnectToDatabase()
 # Gets spawn data for the current zone
-cursor = database.GetDbSpawnData()
+cursor = globals.database.GetDbSpawnData()
 
 numrows = cursor.rowcount
 
@@ -806,7 +806,7 @@ world.PopulateSpawns(cursor, numrows)
 
 # NEEDS REFACTORING
 # Populates the spawns treeview
-cursor = database.GetDbSpawnData()
+cursor = globals.database.GetDbSpawnData()
 numrows = cursor.rowcount
 treeview = globals.spawndialog.GetSpawnsTreeView
 root = treeview.AddRoot('Spawns for this zone')
