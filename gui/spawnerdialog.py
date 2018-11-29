@@ -200,4 +200,9 @@ class SpawnsFrame ( wx.Frame ):
 
 		return wx.TreeItemId()
 
+	def AddNewSpawnToTree(self, spawn):
+
+		npcname = globals.database.GetNpcNameById(spawn.spawnentry_npcid)
+		spawngroup = self.m_treeCtrlSpawnGroups.AppendItem(self.m_treeCtrlSpawnGroups.GetRootItem(), spawn.spawngroup_name)
+		self.m_treeCtrlSpawnGroups.AppendItem(spawngroup, npcname + "  (" + str(spawn.spawnentry_x) + ", " + str(spawn.spawnentry_y) + ", " + str(spawn.spawnentry_z) + ")")
 

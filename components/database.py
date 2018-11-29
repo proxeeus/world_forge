@@ -78,18 +78,40 @@ class Database:
         return lastId
 
     # Inserts a new row into the Spawn2 table with the provided Spawn data
+    # 1. Insert a new spawngroup entry
+    # 2. Insert a new spawn2 entry referencing the previously inserted spawngroupID
+    # 3. Inser a new spawnentry referencing both previously inserted spawn IDs
     def InsertNewSpawn(self, spawn):
 
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
+        query = """ INSERT INTO spawngroup(name, spawn_limit, dist, max_x, min_x, max_y, min_y, delay, mindelay, despawn, despawn_timer
+                    VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"""
+        values = (spawn.spawngroup_name, spawn.spawngroup_spawnlimit, spawn.spawngroup_dist, spawn.spawngroup_maxx, spawn.spawngroup_minx, spawn.spawngroup_maxy, spawn.spawngroup_miny, spawn.spawngroup_mindelay, spawn.spawngroup_despawn, spawn.spawngroup_despawntimer)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print("1 spawngroup inserted, ID:", cursor.lastrowid)
+        self.lastinsertedspawngroupid = cursor.lastrowid
+
         query = """INSERT INTO spawn2(spawngroupID,zone, version, x,y,z,heading,respawntime,variance,pathgrid,_condition,condvalue,enabled, 
         animation) VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,,%s,%s);"""
-        values = (spawn.spawngroup_id ,spawn.spawnentry_zone,  spawn.spawnentry_version ,spawn.spawnentry_x,spawn.spawnentry_y ,spawn.spawnentry_z , spawn.spawnentry_heading,spawn.spawnentry_respawn ,spawn.spawnentry_variance ,spawn.spawnentry_pathgrid ,spawn.spawnentry_condition ,spawn.spawnentry_condvalue ,spawn.spawnentry_enabled ,spawn.spawnentry_animation )
+        values = (self.lastinsertedspawngroupid, spawn.spawnentry_zone, spawn.spawnentry_version ,spawn.spawnentry_x,spawn.spawnentry_y ,spawn.spawnentry_z , spawn.spawnentry_heading,spawn.spawnentry_respawn ,spawn.spawnentry_variance ,spawn.spawnentry_pathgrid ,spawn.spawnentry_condition ,spawn.spawnentry_condvalue ,spawn.spawnentry_enabled ,spawn.spawnentry_animation )
         cursor.execute(query, values)
-
         self.conn.commit()
         print("1 record inserted, ID:", cursor.lastrowid)
         self.lastinsertedspawn2id = cursor.lastrowid
 
+        query = "INSERT INTO spawnentry(spawngroupID, npcID, chance) VALUES (%s, %s, %s);"
+        values = self.lastinsertedspawngroupid, spawn.spawnentry_npcid, spawn.spawngroup_chance
+        cursor.execute(query, values)
+
+    def GetNpcNameById(self, npcid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT name FROM npc_types where id =" + str(npcid) + ";"
+        cursor.execute(query)
+        row = cursor.fetchone()
+        if row:
+            return row["name"]
 
 

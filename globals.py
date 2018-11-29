@@ -1,6 +1,6 @@
 def init():
-    global spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, spawn_list, hasClickedSpawn, exploreMode, insertMode, editMode, currentZone, new_spawns_list, database
-    spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, spawn_list, new_spawns_list, database = None
+    global spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, spawn_list, hasClickedSpawn, exploreMode, insertMode, editMode, currentZone, database
+    spawndialog, selectedSpawnXYZ, selectedSpawnPoint3D, spawn_list, database = None
 
 
 def addspawntolist(spawn):

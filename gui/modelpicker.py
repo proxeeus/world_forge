@@ -13,6 +13,7 @@ from pandac.PandaModules import *
 from gui.picker import Picker
 import globals
 from components.spawn import Spawn
+import wx
 
 class ModelPicker(DirectObject.DirectObject):
    def __init__(self, topNode = None):
@@ -89,7 +90,18 @@ class ModelPicker(DirectObject.DirectObject):
             thePoint = picker.pick()
             print thePoint
             spawn = Spawn()
+            spawn.newdbentry = True
+            # Coordinates are reversed in the 3D view so we have to adapt.
+            spawn.spawnentry_x = thePoint[1].getY()
+            spawn.spawnentry_y = thePoint[1].getX()
+            spawn.spawnentry_z = thePoint[1].getZ()
+            spawn.spawnentry_npcid = int(globals.spawndialog.m_spawnEntryNpcIdTextCtrl.Value)
+            if spawn.spawnentry_npcid == 0:
+               wx.MessageBox('NPC ID cannot be 0.', 'Error', wx.OK | wx.ICON_ERROR)
+               return
             spawn.addnewspawntoworld(thePoint, self)
+            globals.spawn_list.append(spawn)
+            globals.spawndialog.AddNewSpawnToTree(spawn)
       else:
          picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF
@@ -99,7 +111,6 @@ class ModelPicker(DirectObject.DirectObject):
          print thePoint
          print self.lastSelectedObject.getTag("NpcName")
          print "Heading: " ,self.lastSelectedObject.getH()
-         #globals.spawndialog.m_spawnGroupNameTextCtrl.SetValue("ta grosse mere")
          selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
          if selectedspawn:
             globals.spawndialog.UpdateGUI(selectedspawn)

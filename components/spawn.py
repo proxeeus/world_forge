@@ -39,6 +39,7 @@ class Spawn:
     # other members
     modelname = "models/arrow.egg"
     model = ""
+    newdbentry = False
 
     #def __init__(self, spawngroup_id, spawngroup_name):
      #   self.spawngroup_id = spawngroup_id
