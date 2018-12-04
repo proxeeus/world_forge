@@ -138,6 +138,7 @@ class MouseAccume(object):
 
 
 class World(DirectObject):
+    cfg = None
     def __init__(self):
         self.last_mousex = 0
         self.last_mousey = 0
@@ -701,29 +702,37 @@ class World(DirectObject):
     def PopulateSpawns(self, cursor, numrows):
         spawn_coords = list()
         globals.spawn_list = list()
+        cfg = self.configurator.config
         for x in range(0, numrows):
             row = cursor.fetchone()
             point = Point3(long(row["Spawn2Y"]), long(row["Spawn2X"]), long(row["Spawn2Z"]))
-            if point not in spawn_coords:
-                spawn = Spawn()
-                self.InitSpawnData(spawn, row)
-                spawn.model = loader.loadModel(spawn.modelname)
-                spawn.initmodel()
-                spawn.model.reparentTo(render)
-                spawn.initheadingfromdb(row["Spawn2Heading"])
-                spawn.placeintoworld(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
-                min,macks = spawn.model.getTightBounds()
-                radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()])/2
-                cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
-                csNode = spawn.model.attachNewNode(CollisionNode("modelCollide"))
-                csNode.node().addSolid(cs)
-                # TODO: ADD MORE TAGS??
-                spawn.model.setTag("name", row["NpcName"])
-                spawn.model.setTag("spawngroup_name", row["spawngroup_name"])
-                spawn.model.setTag("spawn2id", str(row["Spawn2Id"]))
-                picker.makePickable(spawn.model)
-                globals.spawn_list.append(spawn)
-                spawn_coords.append(point)
+            if cfg['ignore_duplicate_spawns'] == 'True':
+                if point not in spawn_coords:
+                    self.PlaceSpawnPointOn3dMap(row)
+                    spawn_coords.append(point)
+            else:
+                self.PlaceSpawnPointOn3dMap(row)
+
+    def PlaceSpawnPointOn3dMap(self, row):
+        spawn = Spawn()
+        self.InitSpawnData(spawn, row)
+        spawn.model = loader.loadModel(spawn.modelname)
+        spawn.initmodel()
+        spawn.model.reparentTo(render)
+        spawn.initheadingfromdb(row["Spawn2Heading"])
+        spawn.placeintoworld(row["Spawn2Y"], row["Spawn2X"], row["Spawn2Z"])
+        min, macks = spawn.model.getTightBounds()
+        radius = max([macks.getY() - min.getY(), macks.getX() - min.getX()]) / 2
+        cs = CollisionSphere(row["Spawn2X"], row["Spawn2Y"], row["Spawn2Z"], radius)
+        csNode = spawn.model.attachNewNode(CollisionNode("modelCollide"))
+        csNode.node().addSolid(cs)
+        # TODO: ADD MORE TAGS??
+        spawn.model.setTag("name", row["NpcName"])
+        spawn.model.setTag("spawngroup_name", row["spawngroup_name"])
+        spawn.model.setTag("spawn2id", str(row["Spawn2Id"]))
+        picker.makePickable(spawn.model)
+        globals.spawn_list.append(spawn)
+
 
     # Initializes a spawn object with database values
     def InitSpawnData(self, spawn, row):
