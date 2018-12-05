@@ -91,17 +91,48 @@ class ModelPicker(DirectObject.DirectObject):
             print thePoint
             spawn = Spawn()
             spawn.newdbentry = True
-            # Coordinates are reversed in the 3D view so we have to adapt.
-            spawn.spawnentry_x = thePoint[1].getY()
-            spawn.spawnentry_y = thePoint[1].getX()
-            spawn.spawnentry_z = thePoint[1].getZ()
             spawn.spawnentry_npcid = int(globals.spawndialog.m_spawnEntryNpcIdTextCtrl.Value)
             if spawn.spawnentry_npcid == 0:
                wx.MessageBox('NPC ID cannot be 0.', 'Error', wx.OK | wx.ICON_ERROR)
                return
+
+            # Coordinates are reversed in the 3D view so we have to adapt.
+            spawn.spawnentry_x = thePoint[1].getY()
+            spawn.spawnentry_y = thePoint[1].getX()
+            spawn.spawnentry_z = thePoint[1].getZ()
+            #
+            # Spawnentry data
+            #
+            spawn.spawnentry_npcname = str(globals.database.GetNpcNameById(str(spawn.spawnentry_npcid)))
+            spawn.spawnentry_animation = globals.spawndialog.m_spawnEntryAnimationTextCtrl.Value
+            spawn.spawnentry_enabled = globals.spawndialog.m_spawnEntryEnabledTextCtrl.Value
+            spawn.spawnentry_condvalue = globals.spawndialog.m_spawnEntryConditionValueTextCtrl.Value
+            spawn.spawnentry_condition = globals.spawndialog.m_spawnEntryConditionTextCtrl.Value
+            spawn.spawnentry_pathgrid = globals.spawndialog.m_spawnEntryPathGridTextCtrl.Value
+            spawn.spawnentry_variance = globals.spawndialog.m_spawnEntryVarianceTextCtrl.Value
+            spawn.spawnentry_heading = globals.spawndialog.m_spawnEntryHeadingTextCtrl.Value
+            spawn.spawnentry_version = globals.spawndialog.m_spawnEntryVersionTextCtrl.Value
+            spawn.spawnentry_respawn = globals.spawndialog.m_spawnEntryRespawnTextCtrl.Value
+            spawn.spawnentry_zone = globals.spawndialog.m_spawnEntryZoneTextCtrl.Value
+            #
+            # Spawngroup data
+            #
+            spawn.spawngroup_name = "World_Forge_spawngroup_" + str(globals.database.GetNextSpawnGroupId())
+            spawn.spawngroup_chance = globals.spawndialog.m_spawnGroupChanceTextCtrl.Value
+            spawn.spawngroup_despawntimer = globals.spawndialog.m_spawnGroupDespawnTimerTextCtrl.Value
+            spawn.spawngroup_mindelay = globals.spawndialog.m_spawnGroupMinDelayTextCtrl.Value
+            spawn.spawngroup_miny = globals.spawndialog.m_spawnGroupMinYTextCtrl.Value
+            spawn.spawngroup_maxy = globals.spawndialog.m_spawnGroupMaxYTextCtrl.Value
+            spawn.spawngroup_minx = globals.spawndialog.m_spawnGroupMinXTextCtrl.Value
+            spawn.spawngroup_maxx = globals.spawndialog.m_spawnGroupMaxXTextCtrl.Value
+            spawn.spawngroup_dist = globals.spawndialog.m_spawnGroupDistTextCtrl.Value
+            spawn.spawngroup_spawnlimit = globals.spawndialog.m_spawnGroupSpawnLimitTextCtrl.Value
+            spawn.spawngroup_delay = globals.spawndialog.m_spawnGroupDelayTextCtrl.Value
+
             spawn.addnewspawntoworld(thePoint, self)
             globals.spawn_list.append(spawn)
             globals.spawndialog.AddNewSpawnToTree(spawn)
+            globals.database.InsertNewSpawn(spawn)
       else:
          picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF

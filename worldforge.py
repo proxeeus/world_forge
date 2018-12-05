@@ -768,6 +768,11 @@ class World(DirectObject):
         spawn.spawnentry_animation = row["Spawn2Animation"]
         spawn.spawnentry_zone = row["Spawn2Zone"]
 
+        spawn.spawnentry_originalx = row["Spawn2X"]
+        spawn.spawnentry_originaly = row["Spawn2Y"]
+        spawn.spawnentry_originalz = row["Spawn2Z"]
+        spawn.spawnentry_originalheading = row["Spawn2Heading"]
+
 
     # Initializes the camera position upon startup
     def InitCameraPosition(self):
@@ -793,6 +798,7 @@ world = World()
 world.load()
 configurator = Configurator(world)
 cfg = configurator.config
+globals.config = cfg
 # Creates a ModelPicker object in charge of setting spawn models as Pickable.
 picker = ModelPicker()
 

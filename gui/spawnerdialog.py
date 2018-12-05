@@ -4,7 +4,9 @@ import wx
 import wx.xrc
 import re
 import globals
+from components.database import Database
 from panda3d.core import Point3
+from config import Configurator
 pattern = "\(([^\)]+)\)"
 
 class SpawnsFrame ( wx.Frame ):
@@ -27,7 +29,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnGroupMaxXStaticText = wx.StaticText(self, wx.ID_ANY, "maX", wx.Point(411, 64), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupMaxXTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(459, 61), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupMinYStaticText = wx.StaticText(self, wx.ID_ANY, "minY", wx.Point(508, 64), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnGroupMMinYTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(552, 61), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnGroupMinYTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(552, 61), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupMaxYStaticText = wx.StaticText(self, wx.ID_ANY, "maxY", wx.Point(627, 66), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupMaxYTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(679, 61), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Dist
@@ -38,19 +40,19 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnGroupMinDelayTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "15000", wx.Point(459, 92), wx.Size(50, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Delay
 		self.m_spawnGroupDelayStaticText = wx.StaticText(self, wx.ID_ANY, "Delay", wx.Point(508, 95), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnGroupDelayTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "15000", wx.Point(552, 92), wx.Size(50, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnGroupDelayTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(552, 92), wx.Size(50, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Despawn
 		self.m_spawnGroupDespawnStaticText = wx.StaticText(self, wx.ID_ANY, "Despawn", wx.Point(603, 95), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupDespawnTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(679, 92), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Despawn Timer
-		self.m_spawnGroupDespawnTimerStaticText = wx.StaticText(self, wx.ID_ANY, "Despawn", wx.Point(300, 126), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnGroupDespawnTimerTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(407, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnGroupDespawnTimerStaticText = wx.StaticText(self, wx.ID_ANY, "Despawn Timer", wx.Point(300, 126), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_spawnGroupDespawnTimerTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "100", wx.Point(407, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Spawn Limit
 		self.m_spawnGroupSpawnLimitStaticText = wx.StaticText(self, wx.ID_ANY, "Spawn Limit", wx.Point(465, 129), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnGroupSpawnLimitTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(552, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawngroup Chance
 		self.m_spawnGroupChanceStaticText = wx.StaticText(self, wx.ID_ANY, "Chance", wx.Point(613, 129), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnGroupChanceTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(679, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnGroupChanceTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "100", wx.Point(679, 126), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 
 		# Spawnentry
 		self.m_spawnEntryStaticText = wx.StaticText(self, wx.ID_ANY, "Spawnentry", wx.Point(300, 245), wx.Size(168, 22), wx.TR_DEFAULT_STYLE)
@@ -80,7 +82,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnEntryConditionTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(378, 332), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Condition Value
 		self.m_spawnEntryConditionValueStaticText = wx.StaticText(self, wx.ID_ANY, "Condition Value", wx.Point(423, 335), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnEntryConditionValueTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(536, 330), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryConditionValueTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "1", wx.Point(536, 330), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Version
 		self.m_spawnEntryVersionStaticText = wx.StaticText(self, wx.ID_ANY, "Version", wx.Point(583, 335), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnEntryVersionTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(645, 332), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
@@ -89,15 +91,18 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnEntryEnabledTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "1", wx.Point(378, 364), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Animation
 		self.m_spawnEntryAnimationStaticText = wx.StaticText(self, wx.ID_ANY, "Animation", wx.Point(456, 367), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-		self.m_spawnEntryAnimationTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "1", wx.Point(536, 362), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
+		self.m_spawnEntryAnimationTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "0", wx.Point(536, 362), wx.Size(32, 22), wx.TR_DEFAULT_STYLE)
 		# Spawnentry Zone
 		self.m_spawnEntryZoneStaticText = wx.StaticText(self, wx.ID_ANY, "Zone", wx.Point(574, 367), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_spawnEntryZoneTextCtrl = wx.TextCtrl(self, wx.ID_ANY, "", wx.Point(621, 364), wx.Size(168, 22), wx.TR_DEFAULT_STYLE)
+		# Auto assign zone value
+		self.m_spawnEntryZoneTextCtrl.SetLabel(globals.config['default_zone'])
 
 		# Buttons
 		self.m_AddSpawnButton = wx.Button(self, wx.ID_ANY, "Add",  wx.Point(511, 422), wx.DefaultSize, 0, wx.DefaultValidator)
 		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Delete", wx.Point(594, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
-		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Save", wx.Point(717, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
+		self.m_AddSaveButton = wx.Button(self, wx.ID_ANY, "Save", wx.Point(717, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
+		self.m_AddSaveButton.Bind(wx.EVT_BUTTON, self.OnSave)
 
 		treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
@@ -110,6 +115,10 @@ class SpawnsFrame ( wx.Frame ):
 
 
 	### EVENTS
+
+	def OnSave(self, event):
+		toto = globals.database.GetNextSpawnGroupId()
+		print toto
 
 	def initmenubar(self):
 		menubar = wx.MenuBar()

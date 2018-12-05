@@ -70,12 +70,23 @@ class Database:
 
         query = "SELECT * FROM spawngroup ORDER BY ID DESC LIMIT 1"
         cursor.execute(query)
-
         row = cursor.fetchone()
         lastId = 0
         if row:
             lastId = row["id"] + 1
         return lastId
+
+    # Gets the name of an NPC based on its ID
+    def GetNpcNameById(self, npcid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT name FROM npctypes where id = " + npcid
+        cursor.execute(query)
+        row = cursor.fetchone()
+        name = ""
+        if row:
+            name = row["name"]
+        return name
 
     # Inserts a new row into the Spawn2 table with the provided Spawn data
     # 1. Insert a new spawngroup entry
@@ -85,16 +96,16 @@ class Database:
 
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """ INSERT INTO spawngroup(name, spawn_limit, dist, max_x, min_x, max_y, min_y, delay, mindelay, despawn, despawn_timer
+        query = """ INSERT INTO spawngroup(name, spawn_limit, dist, max_x, min_x, max_y, min_y, delay, mindelay, despawn, despawn_timer)
                     VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"""
-        values = (spawn.spawngroup_name, spawn.spawngroup_spawnlimit, spawn.spawngroup_dist, spawn.spawngroup_maxx, spawn.spawngroup_minx, spawn.spawngroup_maxy, spawn.spawngroup_miny, spawn.spawngroup_mindelay, spawn.spawngroup_despawn, spawn.spawngroup_despawntimer)
+        values = (spawn.spawngroup_name, spawn.spawngroup_spawnlimit, spawn.spawngroup_dist, spawn.spawngroup_maxx, spawn.spawngroup_minx, spawn.spawngroup_maxy, spawn.spawngroup_miny, spawn.spawngroup_delay, spawn.spawngroup_mindelay, spawn.spawngroup_despawn, spawn.spawngroup_despawntimer)
         cursor.execute(query, values)
         self.conn.commit()
         print("1 spawngroup inserted, ID:", cursor.lastrowid)
         self.lastinsertedspawngroupid = cursor.lastrowid
 
-        query = """INSERT INTO spawn2(spawngroupID,zone, version, x,y,z,heading,respawntime,variance,pathgrid,_condition,condvalue,enabled, 
-        animation) VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,,%s,%s);"""
+        query = """INSERT INTO spawn2(spawngroupID,zone, version, x,y,z,heading,respawntime,variance,pathgrid,_condition,cond_value,enabled, 
+        animation) VALUES (%s, %s, %s,%s, %s, %s,%s, %s, %s,%s, %s, %s,%s,%s);"""
         values = (self.lastinsertedspawngroupid, spawn.spawnentry_zone, spawn.spawnentry_version ,spawn.spawnentry_x,spawn.spawnentry_y ,spawn.spawnentry_z , spawn.spawnentry_heading,spawn.spawnentry_respawn ,spawn.spawnentry_variance ,spawn.spawnentry_pathgrid ,spawn.spawnentry_condition ,spawn.spawnentry_condvalue ,spawn.spawnentry_enabled ,spawn.spawnentry_animation )
         cursor.execute(query, values)
         self.conn.commit()

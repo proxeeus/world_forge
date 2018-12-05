@@ -36,6 +36,12 @@ class Spawn:
     spawnentry_animation = 0
     spawnentry_zone = ""
 
+    # The very base, original coordinates, useful for reference
+    spawnentry_originalx = 0
+    spawnentry_originaly = 0
+    spawnentry_originalz = 0
+    spawnentry_originalheading = 0
+
     # other members
     modelname = "models/arrow.egg"
     model = ""
