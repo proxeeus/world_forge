@@ -106,7 +106,8 @@ class SpawnsFrame ( wx.Frame ):
 
 		treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
-		self.m_treeCtrlSpawnGroups.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnSelectSpawn )
+		self.m_treeCtrlSpawnGroups.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClickSpawn)
+		self.m_treeCtrlSpawnGroups.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelectSpawn)
 		
 		self.SetSizer( treeViewSizer )
 		self.Layout()
@@ -132,8 +133,17 @@ class SpawnsFrame ( wx.Frame ):
 	def OnQuit(self,e):
 		exit(0)
 
-	# Double-click on a node
 	def OnSelectSpawn(self, event):
+		idpattern = "\[([^\)]+)\]"
+		selectedText = self.m_treeCtrlSpawnGroups.GetItemText(event.GetItem())
+		match = re.search(idpattern, selectedText)
+		if match:
+			id = match.group(1)
+			spawn = globals.getspawnfromglobalspawnsbyname(id)
+			self.UpdateGUI(spawn)
+
+	# Double-click on a node
+	def OnDoubleClickSpawn(self, event):
 		selectedText = self.m_treeCtrlSpawnGroups.GetItemText(event.GetItem())
 		match = re.search(pattern, selectedText)
 		if match:
@@ -155,7 +165,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnEntryStaticText.SetLabel(spawn.spawnentry_npcname)
 		self.m_spawnGroupMinXTextCtrl.SetValue(str(spawn.spawngroup_minx))
 		self.m_spawnGroupMaxXTextCtrl.SetValue(str(spawn.spawngroup_maxx))
-		self.m_spawnGroupMMinYTextCtrl.SetValue(str(spawn.spawngroup_miny))
+		self.m_spawnGroupMinYTextCtrl.SetValue(str(spawn.spawngroup_miny))
 		self.m_spawnGroupMaxYTextCtrl.SetValue(str(spawn.spawngroup_maxy))
 		self.m_spawnGroupDistTextCtrl.SetValue(str(spawn.spawngroup_dist))
 		self.m_spawnGroupMinDelayTextCtrl.SetValue(str(spawn.spawngroup_mindelay))
@@ -213,5 +223,5 @@ class SpawnsFrame ( wx.Frame ):
 
 		npcname = globals.database.GetNpcNameById(spawn.spawnentry_npcid)
 		spawngroup = self.m_treeCtrlSpawnGroups.AppendItem(self.m_treeCtrlSpawnGroups.GetRootItem(), spawn.spawngroup_name)
-		self.m_treeCtrlSpawnGroups.AppendItem(spawngroup, npcname + "  (" + str(spawn.spawnentry_x) + ", " + str(spawn.spawnentry_y) + ", " + str(spawn.spawnentry_z) + ")")
+		self.m_treeCtrlSpawnGroups.AppendItem(spawngroup, "[" + str(spawn.spawnentry_id) + "] " + npcname + "  (" + str(spawn.spawnentry_x) + ", " + str(spawn.spawnentry_y) + ", " + str(spawn.spawnentry_z) + ")")
 

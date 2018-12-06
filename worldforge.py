@@ -831,10 +831,10 @@ for x in range(0, numrows):
     result = globals.spawndialog.GetItemByLabel(treeview, row["spawngroup_name"], treeview.GetRootItem())
     if result.IsOk():
         #spawngroup = treeview.AppendItem(result, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(result, row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
+        spawnpoint = treeview.AppendItem(result, "[" + str(row["Spawn2Id"]) + "] " + row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
     else:
         spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
-        spawnpoint = treeview.AppendItem(spawngroup, row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
+        spawnpoint = treeview.AppendItem(spawngroup, "[" + str(row["Spawn2Id"]) + "] " + row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
 
 # start in Explore mode by default
 world.toggleDefaultMode()
