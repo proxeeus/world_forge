@@ -84,6 +84,7 @@ class ModelPicker(DirectObject.DirectObject):
             selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
             if selectedspawn:
                globals.spawndialog.UpdateGUI(selectedspawn)
+               globals.selectedSpawn = selectedspawn
          # If we are in Insert Mode, we'll insert a new spawn point into the world
          if globals.insertMode == True:
             picker = Picker(render)
@@ -134,6 +135,7 @@ class ModelPicker(DirectObject.DirectObject):
             globals.database.InsertNewSpawn(spawn)
             spawn.spawnentry_id = str(globals.database.lastinsertedspawn2id)
             globals.spawndialog.AddNewSpawnToTree(spawn)
+            globals.selectedSpawn = spawn
       else:
          picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF

@@ -356,8 +356,30 @@ class World(DirectObject):
             self.accept(cfg['toggle_edit-mode'], self.toggleEditMode)
             self.accept(cfg['toggle_insert-mode'], self.toggleInsertMode)
             self.accept(cfg['toggle_explore-mode'], self.toggleExploreMode)
+            self.accept(cfg['rotate-right'], self.rotateModelRight)
+            self.accept(cfg['rotate-left'], self.rotateModelLeft)
         else:
             messenger.clear()
+
+    def rotateModelRight(self):
+        if globals.selectedSpawn:
+            cfg = self.configurator.config
+            #myInterval = globals.selectedSpawn.model.hprInterval(1.0, Vec3(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']), 0, 0))
+            globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']))
+            # Really not sure about that...
+            if globals.selectedSpawn.model.getH() > 360:
+                globals.selectedSpawn.model.setH(0)
+            print globals.selectedSpawn.model.getH()
+
+    def rotateModelLeft(self):
+        if globals.selectedSpawn:
+            cfg = self.configurator.config
+            # myInterval = globals.selectedSpawn.model.hprInterval(1.0, Vec3(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']), 0, 0))
+            globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() - int(cfg['rotation-amount']))
+            # Really not sure about that either...
+            if globals.selectedSpawn.model.getH() > -360:
+                globals.selectedSpawn.model.setH(0)
+            print globals.selectedSpawn.model.getH()
 
     def toggleDefaultMode(self):
         globals.editMode = False

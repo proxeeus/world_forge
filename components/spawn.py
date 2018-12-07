@@ -83,3 +83,6 @@ class Spawn:
         #globals.addspawntolist(self)
         # spawn_coords.append(point)
 
+    def deletemodel(self):
+        loader.unloadModel(self.modelname)
+        self.model.removeNode()

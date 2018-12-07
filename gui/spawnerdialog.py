@@ -103,6 +103,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Delete", wx.Point(594, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
 		self.m_AddSaveButton = wx.Button(self, wx.ID_ANY, "Save", wx.Point(717, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
 		self.m_AddSaveButton.Bind(wx.EVT_BUTTON, self.OnSave)
+		self.m_AddDeleteButton.Bind(wx.EVT_BUTTON, self.OnDelete)
 
 		treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
@@ -116,6 +117,30 @@ class SpawnsFrame ( wx.Frame ):
 
 
 	### EVENTS
+
+	# TODO: FINISH THIS
+	def OnDelete(self, event):
+		if globals.selectedSpawn:
+			#globals.database.DeleteSpawn(globals.selectedSpawn)
+			globals.selectedSpawn.deletemodel()
+			cookie = 0
+			root = self.m_treeCtrlSpawnGroups.GetFirstChild(self.m_treeCtrlSpawnGroups.GetRootItem(), cookie)
+			self.RecursiveDelete(root)
+			#self.m_treeCtrlSpawnGroups.
+
+	def RecursiveDelete(self, root):
+		item, cookie = self.m_treeCtrlSpawnGroups.GetFirstChild(root, cookie)
+
+		while item.IsOk():
+			text = self.m_treeCtrlSpawnGroups.GetItemText(item)
+			idpattern = "[" + str(globals.selectedSpawn.spawnentry_id) + "]"
+			if idpattern in text:
+				self.m_treeCtrlSpawnGroups.RemoveChild(item)
+			if self.m_treeCtrlSpawnGroups.ItemHasChildren(item):
+				sibling = self.RecursiveDelete(item)
+				if sibling.isOk():
+					self.m_treeCtrlSpawnGroups.RemoveChild(sibling)
+			item = self.m_treeCtrlSpawnGroups.GetNextChild(root, cookie)
 
 	def OnSave(self, event):
 		toto = globals.database.GetNextSpawnGroupId()
@@ -141,6 +166,8 @@ class SpawnsFrame ( wx.Frame ):
 			id = match.group(1)
 			spawn = globals.getspawnfromglobalspawnsbyname(id)
 			self.UpdateGUI(spawn)
+			globals.selectedSpawn = spawn
+			print "cbatte"
 
 	# Double-click on a node
 	def OnDoubleClickSpawn(self, event):

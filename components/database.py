@@ -116,6 +116,28 @@ class Database:
         values = self.lastinsertedspawngroupid, spawn.spawnentry_npcid, spawn.spawngroup_chance
         cursor.execute(query, values)
 
+    # Deletes a complete spawn from the database and all its associated Spawngroup, Spawn2 and Spawnentry entries
+    def DeleteSpawn(self, spawn):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """DELETE FROM spawnentry WHERE spawngroupID = %t and npcID = %t;"""
+        values = (spawn.spawngroup_id, spawn.spawnentry_id)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print("Spawn entry deleted successfully.")
+
+        query = """DELETE FROM spawn2 where spawngroupID = %s AND id = %s"""
+        values = (spawn.spawngroup_id, spawn.spawnentry_id)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print("Spawn2 deleted successfully.")
+
+        query = """DELETE FROM spawngroup where id = %s"""
+        values = (spawn.spawngroup_id)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print ("Spawngroup deleted successfully.")
+
     def GetNpcNameById(self, npcid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
