@@ -59,6 +59,11 @@ class Spawn:
     def initheadingfromdb(self, dbheading):
         self.model.setH(dbheading / 512 * 360 - 90)
 
+    # Does the exact opposite of initheadingfromdb
+    def setheadingfromworld(self, worldheading):
+        # ((Orientation B + 90)/360)*520
+        self.spawnentry_heading = ((worldheading + 90) / 360) * 520
+
     # Renders the spawn's model in the 3D view
     def placeintoworld(self, x, y, z):
         self.model.setPos(x, y, z)

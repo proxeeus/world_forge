@@ -356,6 +356,9 @@ class World(DirectObject):
             self.accept(cfg['toggle_edit-mode'], self.toggleEditMode)
             self.accept(cfg['toggle_insert-mode'], self.toggleInsertMode)
             self.accept(cfg['toggle_explore-mode'], self.toggleExploreMode)
+            # Accept both single-presses and long presses for rotating models
+            self.accept(cfg['rotate-right'] + "-repeat", self.rotateModelRight)
+            self.accept(cfg['rotate-left'] + "-repeat", self.rotateModelLeft)
             self.accept(cfg['rotate-right'], self.rotateModelRight)
             self.accept(cfg['rotate-left'], self.rotateModelLeft)
         else:
@@ -364,22 +367,26 @@ class World(DirectObject):
     def rotateModelRight(self):
         if globals.selectedSpawn:
             cfg = self.configurator.config
-            #myInterval = globals.selectedSpawn.model.hprInterval(1.0, Vec3(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']), 0, 0))
             globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']))
             # Really not sure about that...
             if globals.selectedSpawn.model.getH() > 360:
                 globals.selectedSpawn.model.setH(0)
             print globals.selectedSpawn.model.getH()
+            globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
+            globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
+            print globals.selectedSpawn.spawnentry_heading
 
     def rotateModelLeft(self):
         if globals.selectedSpawn:
             cfg = self.configurator.config
-            # myInterval = globals.selectedSpawn.model.hprInterval(1.0, Vec3(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']), 0, 0))
             globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() - int(cfg['rotation-amount']))
             # Really not sure about that either...
-            if globals.selectedSpawn.model.getH() > -360:
+            if globals.selectedSpawn.model.getH() < -360:
                 globals.selectedSpawn.model.setH(0)
             print globals.selectedSpawn.model.getH()
+            globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
+            globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
+            print globals.selectedSpawn.spawnentry_heading
 
     def toggleDefaultMode(self):
         globals.editMode = False
