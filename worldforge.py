@@ -365,28 +365,34 @@ class World(DirectObject):
             messenger.clear()
 
     def rotateModelRight(self):
-        if globals.selectedSpawn:
-            cfg = self.configurator.config
-            globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']))
-            # Really not sure about that...
-            if globals.selectedSpawn.model.getH() > 360:
-                globals.selectedSpawn.model.setH(0)
-            print globals.selectedSpawn.model.getH()
-            globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
-            globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
-            print globals.selectedSpawn.spawnentry_heading
+        if globals.editMode == True:
+            if globals.selectedSpawn:
+                cfg = self.configurator.config
+                globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() + int(cfg['rotation-amount']))
+                # Really not sure about that...
+                if globals.selectedSpawn.model.getH() > 360:
+                    globals.selectedSpawn.model.setH(0)
+                print globals.selectedSpawn.model.getH()
+                globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
+                globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
+                if globals.config['autosave_edit-mode'] == 'True':
+                    globals.database.UpdateSpawn(globals.selectedSpawn)
+                print globals.selectedSpawn.spawnentry_heading
 
     def rotateModelLeft(self):
-        if globals.selectedSpawn:
-            cfg = self.configurator.config
-            globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() - int(cfg['rotation-amount']))
-            # Really not sure about that either...
-            if globals.selectedSpawn.model.getH() < -360:
-                globals.selectedSpawn.model.setH(0)
-            print globals.selectedSpawn.model.getH()
-            globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
-            globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
-            print globals.selectedSpawn.spawnentry_heading
+        if globals.editMode == True:
+            if globals.selectedSpawn:
+                cfg = self.configurator.config
+                globals.selectedSpawn.model.setH(globals.selectedSpawn.model.getH() - int(cfg['rotation-amount']))
+                # Really not sure about that either...
+                if globals.selectedSpawn.model.getH() < -360:
+                    globals.selectedSpawn.model.setH(0)
+                print globals.selectedSpawn.model.getH()
+                globals.selectedSpawn.setheadingfromworld(globals.selectedSpawn.model.getH())
+                globals.spawndialog.m_spawnEntryHeadingTextCtrl.SetValue(str(globals.selectedSpawn.spawnentry_heading))
+                if globals.config['autosave_edit-mode'] == 'True':
+                    globals.database.UpdateSpawn(globals.selectedSpawn)
+                print globals.selectedSpawn.spawnentry_heading
 
     def toggleDefaultMode(self):
         globals.editMode = False
