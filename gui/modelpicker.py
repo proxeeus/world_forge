@@ -161,4 +161,6 @@ class ModelPicker(DirectObject.DirectObject):
                 globals.selectedSpawn.spawnentry_z = thePoint.getZ()
                 globals.selectedSpawn.setheadingfromworld(self.lastSelectedObject.getH())
                 globals.spawndialog.UpdateGUI(globals.selectedSpawn)
+                if globals.config['autosave_edit-mode'] == 'True':
+                   globals.database.UpdateSpawn(globals.selectedSpawn)
          self.lastSelectedObject = None
