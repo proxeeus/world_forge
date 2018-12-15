@@ -82,6 +82,8 @@ class ModelPicker(DirectObject.DirectObject):
          # Try to update the UI
          if self.lastSelectedObject:
             selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
+            if selectedspawn is None:
+               selectedspawn = globals.getspawnfromglobalspawnsbyname(globals.database.lastinsertedspawn2id)
             if selectedspawn:
                globals.spawndialog.UpdateGUI(selectedspawn)
                globals.selectedSpawn = selectedspawn
@@ -119,7 +121,7 @@ class ModelPicker(DirectObject.DirectObject):
             # Spawngroup data
             #
             spawn.spawngroup_name = "World_Forge_spawngroup_" + str(globals.database.GetNextSpawnGroupId())
-            spawn.spawngroup_chance = globals.spawndialog.m_spawnGroupChanceTextCtrl.Value
+            spawn.spawnentry_chance = globals.spawndialog.m_spawnGroupChanceTextCtrl.Value
             spawn.spawngroup_despawntimer = globals.spawndialog.m_spawnGroupDespawnTimerTextCtrl.Value
             spawn.spawngroup_mindelay = globals.spawndialog.m_spawnGroupMinDelayTextCtrl.Value
             spawn.spawngroup_miny = globals.spawndialog.m_spawnGroupMinYTextCtrl.Value
@@ -140,6 +142,8 @@ class ModelPicker(DirectObject.DirectObject):
          picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF
          # ALL EXISTING SPAWNS AND RETURN THAT
+         # the double click bug stems from the fact that we're testing item selection against
+         # self.lastSelectedObject, which is, imo, obsolete.
 
          namedNode, thePoint, rawNode = picker.pick()
          print thePoint
@@ -148,6 +152,13 @@ class ModelPicker(DirectObject.DirectObject):
          selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
          if selectedspawn:
             globals.spawndialog.UpdateGUI(selectedspawn)
+            globals.selectedSpawn = selectedspawn
          if globals.editMode == True:
             self.lastSelectedObject.setPos(thePoint)
+            if globals.selectedSpawn:
+                globals.selectedSpawn.spawnentry_x = thePoint.getY()
+                globals.selectedSpawn.spawnentry_y = thePoint.getX()
+                globals.selectedSpawn.spawnentry_z = thePoint.getZ()
+                globals.selectedSpawn.setheadingfromworld(self.lastSelectedObject.getH())
+                globals.spawndialog.UpdateGUI(globals.selectedSpawn)
          self.lastSelectedObject = None

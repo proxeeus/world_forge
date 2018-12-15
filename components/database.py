@@ -113,8 +113,35 @@ class Database:
         self.lastinsertedspawn2id = cursor.lastrowid
 
         query = "INSERT INTO spawnentry(spawngroupID, npcID, chance) VALUES (%s, %s, %s);"
-        values = self.lastinsertedspawngroupid, spawn.spawnentry_npcid, spawn.spawngroup_chance
+        values = self.lastinsertedspawngroupid, spawn.spawnentry_npcid, spawn.spawnentry_chance
         cursor.execute(query, values)
+
+
+    # Update the spawn's db records
+    def UpdateSpawn(self, spawn):
+
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """UPDATE spawnentry SET chance = %s WHERE spawngroupID = %s AND npcID = %s;"""
+        values = (spawn.spawnentry_chance, spawn.spawngroup_id, spawn.spawnentry_npcid)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print("spawnentry updated")
+
+        query = """UPDATE spawn2 SET spawngroupID = %s, zone = %s, version = %s, x = %s, y = %s, z = %s, heading = %s
+        , respawntime = %s, variance = %s, pathgrid = %s, _condition = %s, cond_value = %s, enabled = %s, animation = %s
+        WHERE id = %s and spawngroupID = %s;"""
+        values = (spawn.spawngroup_id, spawn.spawnentry_zone, spawn.spawnentry_version ,spawn.spawnentry_x,spawn.spawnentry_y ,spawn.spawnentry_z , spawn.spawnentry_heading,spawn.spawnentry_respawn ,spawn.spawnentry_variance ,spawn.spawnentry_pathgrid ,spawn.spawnentry_condition ,spawn.spawnentry_condvalue ,spawn.spawnentry_enabled ,spawn.spawnentry_animation, spawn.spawnentry_id, spawn.spawngroup_id )
+        cursor.execute(query, values)
+        self.conn.commit()
+        print ("spawn2 updated")
+
+        query = """UPDATE spawngroup SET name = %s, spawn_limit = %s, dist = %s, max_x = %s, min_x = %s, max_y = %s, min_y = %s, delay = %s, mindelay = %s, despawn = %s, despawn_timer = %s
+                WHERE id = %s;"""
+        values = (spawn.spawngroup_name, spawn.spawngroup_spawnlimit, spawn.spawngroup_dist, spawn.spawngroup_maxx, spawn.spawngroup_minx, spawn.spawngroup_maxy, spawn.spawngroup_miny, spawn.spawngroup_delay, spawn.spawngroup_mindelay, spawn.spawngroup_despawn, spawn.spawngroup_despawntimer, spawn.spawngroup_id)
+        cursor.execute(query, values)
+        self.conn.commit()
+        print("spawngroup updated")
 
     # Deletes a complete spawn from the database and all its associated Spawngroup, Spawn2 and Spawnentry entries
     def DeleteSpawn(self, spawn):

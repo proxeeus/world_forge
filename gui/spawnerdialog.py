@@ -99,12 +99,12 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnEntryZoneTextCtrl.SetLabel(globals.config['default_zone'])
 
 		# Buttons
-		self.m_AddSpawnButton = wx.Button(self, wx.ID_ANY, "Add",  wx.Point(511, 422), wx.DefaultSize, 0, wx.DefaultValidator)
+		self.m_ResetSpawnButton = wx.Button(self, wx.ID_ANY, "Reset", wx.Point(511, 422), wx.DefaultSize, 0, wx.DefaultValidator)
 		self.m_AddDeleteButton = wx.Button(self, wx.ID_ANY, "Delete", wx.Point(594, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
 		self.m_AddSaveButton = wx.Button(self, wx.ID_ANY, "Save", wx.Point(717, 422), wx.DefaultSize, 0,  wx.DefaultValidator)
 		self.m_AddSaveButton.Bind(wx.EVT_BUTTON, self.OnSave)
 		self.m_AddDeleteButton.Bind(wx.EVT_BUTTON, self.OnDelete)
-
+		self.m_ResetSpawnButton.Bind(wx.EVT_BUTTON, self.OnReset)
 		treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
 		self.m_treeCtrlSpawnGroups.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClickSpawn)
@@ -117,6 +117,55 @@ class SpawnsFrame ( wx.Frame ):
 
 
 	### EVENTS
+
+	def OnReset(self, event):
+		# Spawngroup
+		self.m_spawnGroupNameTextCtrl.SetValue("World_Forge_spawngroup_" + str(globals.database.GetNextSpawnGroupId()))
+		# Spawngroup coords
+		self.m_spawnGroupMinXTextCtrl.SetValue("0")
+		self.m_spawnGroupMaxXTextCtrl.SetValue("0")
+		self.m_spawnGroupMinYTextCtrl.SetValue("0")
+		self.m_spawnGroupMaxYTextCtrl.SetValue("0")
+		# Spawngroup Dist
+		self.m_spawnGroupDistTextCtrl.SetValue("0")
+		# Spawngroup Min Delay
+		self.m_spawnGroupMinDelayTextCtrl.SetValue("15000")
+		# Spawngroup Delay
+		self.m_spawnGroupDelayTextCtrl.SetValue("0")
+		# Spawngroup Despawn
+		self.m_spawnGroupDespawnTextCtrl.SetValue("0")
+		# Spawngroup Despawn Timer
+		self.m_spawnGroupDespawnTimerTextCtrl.SetValue("100")
+		# Spawngroup Spawn Limit
+		self.m_spawnGroupSpawnLimitTextCtrl.SetValue("0")
+		# Spawngroup Chance
+		self.m_spawnGroupChanceTextCtrl.SetValue("100")
+		# Spawnentry Npc ID
+		self.m_spawnEntryNpcIdTextCtrl.SetValue("0")
+		# Spawnentry Coords
+		self.m_spawnEntryXTextCtrl.SetValue("0")
+		self.m_spawnEntryYTextCtrl.SetValue("0")
+		self.m_spawnEntryZTextCtrl.SetValue("0")
+		self.m_spawnEntryHeadingTextCtrl.SetValue("0")
+		# Spawnentry Respawn
+		self.m_spawnEntryRespawnTextCtrl.SetValue("600")
+		# Spawnentry Variance
+		self.m_spawnEntryVarianceTextCtrl.SetValue("0")
+		# Spawnentry Pathgrid
+		self.m_spawnEntryPathGridTextCtrl.SetValue("0")
+		# Spawnentry Condition
+		self.m_spawnEntryConditionTextCtrl.SetValue("0")
+		# Spawnentry Condition Value
+		self.m_spawnEntryConditionValueTextCtrl.SetValue("1")
+		# Spawnentry Version
+		self.m_spawnEntryVersionTextCtrl.SetValue("0")
+		# Spawnentry Enabled
+		self.m_spawnEntryEnabledTextCtrl.SetValue("1")
+		# Spawnentry Animation
+		self.m_spawnEntryAnimationTextCtrl.SetValue("0")
+		# Auto assign zone value
+		self.m_spawnEntryZoneTextCtrl.SetLabel(globals.config['default_zone'])
+		self.m_spawnEntryStaticText.SetLabel("Spawnentry")
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):
@@ -141,10 +190,64 @@ class SpawnsFrame ( wx.Frame ):
 				if sibling.isOk():
 					self.m_treeCtrlSpawnGroups.RemoveChild(sibling)
 			item = self.m_treeCtrlSpawnGroups.GetNextChild(root, cookie)
+	#END TODO
 
 	def OnSave(self, event):
-		toto = globals.database.GetNextSpawnGroupId()
-		print toto
+		if globals.selectedSpawn is None:
+			wx.MessageBox('No spawn selected!', 'Error', wx.OK | wx.ICON_ERROR)
+			return
+		if self.m_spawnGroupNameTextCtrl.GetLineLength(0) > 30:
+			wx.MessageBox('Spawngroup Name cannot exceed 30 characters!', 'Error', wx.OK | wx.ICON_ERROR)
+			return
+		# Spawngroup
+		globals.selectedSpawn.spawngroup_name = self.m_spawnGroupNameTextCtrl.Value
+		# Spawngroup coords
+		globals.selectedSpawn.spawngroup_minx = self.m_spawnGroupMinXTextCtrl.Value
+		globals.selectedSpawn.spawngroup_maxx = self.m_spawnGroupMaxXTextCtrl.Value
+		globals.selectedSpawn.spawngroup_miny = self.m_spawnGroupMinYTextCtrl.Value
+		globals.selectedSpawn.spawngroup_maxy = self.m_spawnGroupMaxYTextCtrl.Value
+		# Spawngroup Dist
+		globals.selectedSpawn.spawngroup_dist = self.m_spawnGroupDistTextCtrl.Value
+		# Spawngroup Min Delay
+		globals.selectedSpawn.spawngroup_mindelay = self.m_spawnGroupMinDelayTextCtrl.Value
+		# Spawngroup Delay
+		globals.selectedSpawn.spawngroup_delay = self.m_spawnGroupDelayTextCtrl.Value
+		# Spawngroup Despawn
+		globals.selectedSpawn.spawngroup_despawn = self.m_spawnGroupDespawnTextCtrl.Value
+		# Spawngroup Despawn Timer
+		globals.selectedSpawn.spawngroup_despawntimer = self.m_spawnGroupDespawnTimerTextCtrl.Value
+		# Spawngroup Spawn Limit
+		globals.selectedSpawn.spawngroup_spawnlimit = self.m_spawnGroupSpawnLimitTextCtrl.Value
+		# Spawnentry Chance
+		globals.selectedSpawn.spawnentry_chance = self.m_spawnGroupChanceTextCtrl.Value
+		# Spawnentry Npc ID
+		globals.selectedSpawn.spawnentry_npcid = self.m_spawnEntryNpcIdTextCtrl.Value
+		# Spawnentry Coords
+		globals.selectedSpawn.spawnentry_x = self.m_spawnEntryXTextCtrl.Value
+		globals.selectedSpawn.spawnentry_y = self.m_spawnEntryYTextCtrl.Value
+		globals.selectedSpawn.spawnentry_z = self.m_spawnEntryZTextCtrl.Value
+		globals.selectedSpawn.spawnentry_heading = self.m_spawnEntryHeadingTextCtrl.Value
+		# Spawnentry Respawn
+		globals.selectedSpawn.spawnentry_respawn = self.m_spawnEntryRespawnTextCtrl.Value
+		# Spawnentry Variance
+		globals.selectedSpawn.spawnentry_variance = self.m_spawnEntryVarianceTextCtrl.Value
+		# Spawnentry Pathgrid
+		globals.selectedSpawn.spawnentry_pathgrid = self.m_spawnEntryPathGridTextCtrl.Value
+		# Spawnentry Condition
+		globals.selectedSpawn.spawnentry_condition = self.m_spawnEntryConditionTextCtrl.Value
+		# Spawnentry Condition Value
+		globals.selectedSpawn.spawnentry_condvalue = self.m_spawnEntryConditionValueTextCtrl.Value
+		# Spawnentry Version
+		globals.selectedSpawn.spawnentry_version = self.m_spawnEntryVersionTextCtrl.Value
+		# Spawnentry Enabled
+		globals.selectedSpawn.spawnentry_enabled = self.m_spawnEntryEnabledTextCtrl.Value
+		# Spawnentry Animation
+		globals.selectedSpawn.spawnentry_animation = self.m_spawnEntryAnimationTextCtrl.Value
+		# Auto assign zone value
+		globals.selectedSpawn.spawnentry_zone = self.m_spawnEntryZoneTextCtrl.Value
+		#self.m_spawnEntryStaticText.SetLabel("Spawnentry")
+
+		globals.database.UpdateSpawn(globals.selectedSpawn)
 
 	def initmenubar(self):
 		menubar = wx.MenuBar()
@@ -165,6 +268,7 @@ class SpawnsFrame ( wx.Frame ):
 		if match:
 			id = match.group(1)
 			spawn = globals.getspawnfromglobalspawnsbyname(id)
+			#TYPE PROBLEM ? ID is int first then string? and it messes up the array search code??
 			self.UpdateGUI(spawn)
 			globals.selectedSpawn = spawn
 			print "cbatte"
@@ -200,7 +304,7 @@ class SpawnsFrame ( wx.Frame ):
 		self.m_spawnGroupDespawnTextCtrl.SetValue(str(spawn.spawngroup_despawn))
 		self.m_spawnGroupDespawnTimerTextCtrl.SetValue(str(spawn.spawngroup_despawntimer))
 		self.m_spawnGroupSpawnLimitTextCtrl.SetValue(str(spawn.spawngroup_spawnlimit))
-		self.m_spawnGroupChanceTextCtrl.SetValue(str(spawn.spawngroup_chance))
+		self.m_spawnGroupChanceTextCtrl.SetValue(str(spawn.spawnentry_chance))
 		self.m_spawnEntryNpcIdTextCtrl.SetValue(str(spawn.spawnentry_npcid))
 		self.m_spawnEntryXTextCtrl.SetValue(str(spawn.spawnentry_x))
 		self.m_spawnEntryYTextCtrl.SetValue(str(spawn.spawnentry_y))

@@ -8,7 +8,7 @@ def addspawntolist(spawn):
 
 def getspawnfromglobalspawnsbyname(spawn2Id):
     for x in spawn_list:
-        if str(x.spawnentry_id) == spawn2Id:
+        if str(x.spawnentry_id) == str(spawn2Id):
             return x
 
 def deletespawnfromglobalspawnsbyid(spawn2Id):

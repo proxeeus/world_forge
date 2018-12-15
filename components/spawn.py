@@ -17,7 +17,7 @@ class Spawn:
     spawngroup_despawn = 0
     spawngroup_despawntimer = 0
     spawngroup_spawnlimit = 0
-    spawngroup_chance = 0
+    spawngentry_chance = 0
 
     spawnentry_id = 0
     spawnentry_npcid = 0
