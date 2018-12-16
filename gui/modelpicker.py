@@ -13,6 +13,7 @@ from pandac.PandaModules import *
 from gui.picker import Picker
 import globals
 from components.spawn import Spawn
+from components.gridpointmanager import GridpointManager
 import wx
 
 class ModelPicker(DirectObject.DirectObject):
@@ -74,22 +75,30 @@ class ModelPicker(DirectObject.DirectObject):
    def selectMe(self):
 
       global picker
-
+      picker = Picker(render)
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
          # Try to update the UI
-         if self.lastSelectedObject:
+         if self.lastSelectedObject and self.lastSelectedObject.getTag("type") == "spawn":
+            print self.lastSelectedObject.getTag("spawn2id")
             selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
             if selectedspawn is None:
                selectedspawn = globals.getspawnfromglobalspawnsbyname(globals.database.lastinsertedspawn2id)
             if selectedspawn:
                globals.spawndialog.UpdateGUI(selectedspawn)
+               gridmanager = GridpointManager()
+               gridmanager.ResetGridList()
+               if selectedspawn.spawnentry_pathgrid > 0:
+                  gridmanager.picker = self
+                  gridmanager.GenerateGrids(selectedspawn.spawnentry_pathgrid, globals.zoneid)
                globals.selectedSpawn = selectedspawn
+         elif self.lastSelectedObject and self.lastSelectedObject.getTag("type") == "gridpoint":
+            print "Grid not yet implemented!!!"
          # If we are in Insert Mode, we'll insert a new spawn point into the world
          if globals.insertMode == True:
-            picker = Picker(render)
+            #picker = Picker(render)
             thePoint = picker.pick()
             print thePoint
             spawn = Spawn()
@@ -143,7 +152,7 @@ class ModelPicker(DirectObject.DirectObject):
             globals.selectedSpawn = spawn
             globals.spawndialog.UpdateGUI(globals.selectedSpawn)
       else:
-         picker = Picker(render)
+         #picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF
          # ALL EXISTING SPAWNS AND RETURN THAT
          # the double click bug stems from the fact that we're testing item selection against

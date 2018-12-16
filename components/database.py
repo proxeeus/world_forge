@@ -29,6 +29,24 @@ class Database:
 
         return self.conn
 
+    def GetDbGridPointsData(self,gridid, zoneid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """SELECT * FROM  grid_entries ge WHERE ge.gridid = %s AND ge.zoneid = %s """
+        values = (gridid, zoneid)
+
+        cursor.execute(query, values)
+        return cursor
+
+    def GetDbGridTypesData(self, gridid, zoneid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """SELECT * FROM  grid g WHERE g.gridid = %s AND g.zoneid = %s """
+        values = (gridid, zoneid)
+
+        cursor.execute(query, values)
+        return cursor
+
     # Queries the Database in order to get spawn data
     # (this should be refactored at some point)
     def GetDbSpawnData(self):

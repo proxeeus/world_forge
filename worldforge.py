@@ -765,6 +765,7 @@ class World(DirectObject):
         spawn.model.setTag("name", row["NpcName"])
         spawn.model.setTag("spawngroup_name", row["spawngroup_name"])
         spawn.model.setTag("spawn2id", str(row["Spawn2Id"]))
+        spawn.model.setTag("type", "spawn")
         picker.makePickable(spawn.model)
         globals.spawn_list.append(spawn)
 
@@ -834,8 +835,11 @@ world.load()
 configurator = Configurator(world)
 cfg = configurator.config
 globals.config = cfg
+globals.zoneid = globals.getzoneidbyname(globals.config['default_zone'])
 # Creates a ModelPicker object in charge of setting spawn models as Pickable.
 picker = ModelPicker()
+globals.grid_list = list()
+globals.gridlinks_list = list()
 
 # Loads the various GUI components
 app = wx.App()
