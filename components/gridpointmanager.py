@@ -16,6 +16,9 @@ class GridpointManager():
         del globals.grid_list
         globals.grid_list = list()
 
+        self.ResetGridLinks()
+
+    def ResetGridLinks(self):
         for x in globals.gridlinks_list:
             x.removeNode()
         del globals.gridlinks_list

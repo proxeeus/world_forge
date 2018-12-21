@@ -96,8 +96,8 @@ class ModelPicker(DirectObject.DirectObject):
                globals.selectedSpawn = selectedspawn
          elif self.lastSelectedObject and self.lastSelectedObject.getTag("type") == "gridpoint":
             print "Grid not yet implemented!!!"
-         # If we are in Insert Mode, we'll insert a new spawn point into the world
-         if globals.insertMode == True:
+         # If we are in Insert Mode and not in Grid Mode, we'll insert a new spawn point into the world
+         if globals.insertMode == True and globals.gridMode == False:
             #picker = Picker(render)
             thePoint = picker.pick()
             print thePoint
@@ -162,18 +162,44 @@ class ModelPicker(DirectObject.DirectObject):
          print thePoint
          print self.lastSelectedObject.getTag("NpcName")
          print "Heading: " ,self.lastSelectedObject.getH()
-         selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
-         if selectedspawn:
-            globals.spawndialog.UpdateGUI(selectedspawn)
-            globals.selectedSpawn = selectedspawn
-         if globals.editMode == True:
-            self.lastSelectedObject.setPos(thePoint)
-            if globals.selectedSpawn:
-                globals.selectedSpawn.spawnentry_x = thePoint.getY()
-                globals.selectedSpawn.spawnentry_y = thePoint.getX()
-                globals.selectedSpawn.spawnentry_z = thePoint.getZ()
-                globals.selectedSpawn.setheadingfromworld(self.lastSelectedObject.getH())
-                globals.spawndialog.UpdateGUI(globals.selectedSpawn)
-                if globals.config['autosave_edit-mode'] == 'True':
-                   globals.database.UpdateSpawn(globals.selectedSpawn)
+         if globals.gridMode == False:
+            selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
+            if selectedspawn:
+               globals.spawndialog.UpdateGUI(selectedspawn)
+               globals.selectedSpawn = selectedspawn
+            if globals.editMode == True:
+               self.lastSelectedObject.setPos(thePoint)
+               if globals.selectedSpawn:
+                   globals.selectedSpawn.spawnentry_x = thePoint.getY()
+                   globals.selectedSpawn.spawnentry_y = thePoint.getX()
+                   globals.selectedSpawn.spawnentry_z = thePoint.getZ()
+                   globals.selectedSpawn.setheadingfromworld(self.lastSelectedObject.getH())
+                   globals.spawndialog.UpdateGUI(globals.selectedSpawn)
+                   if globals.config['autosave_edit-mode'] == 'True':
+                      globals.database.UpdateSpawn(globals.selectedSpawn)
+         else:
+            selectedGrid = globals.getgridfromglobalgridsbyname(self.lastSelectedObject.getTag("gridid"), self.lastSelectedObject.getTag("number"))
+            if selectedGrid:
+                #TODO: implement this
+                #globals.griddialog.UpdateGUI(selectedGrid)
+                globals.selectedGrid = selectedGrid
+                if globals.editMode == True:
+                   self.lastSelectedObject.setPos(thePoint)
+                   if globals.selectedGrid:
+                      globals.selectedGrid.x = thePoint.getY()
+                      globals.selectedGrid.y = thePoint.getX()
+                      globals.selectedGrid.z = thePoint.getZ()
+                      globals.selectedGrid.setheadingfromworld(self.lastSelectedObject.getH())
+                      globals.selectedGrid.gridid = self.lastSelectedObject.getTag("gridid")
+                      globals.selectedGrid.number = self.lastSelectedObject.getTag("number")
+                      print self.lastSelectedObject.getTag("gridid")
+                      print self.lastSelectedObject.getTag("number")
+                      #TODO: implement this
+                      #globals.griddialog.UpdateGUI(globals.selectedGrid)
+
+                      if globals.config['autosave_grid-mode'] == 'True':
+                         globals.database.UpdateDbGridPoint(globals.selectedGrid)
+                      gridmanager = GridpointManager()
+                      gridmanager.ResetGridList()
+                      gridmanager.GenerateGrids(globals.selectedGrid.gridid, globals.zoneid)
          self.lastSelectedObject = None

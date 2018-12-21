@@ -358,6 +358,7 @@ class World(DirectObject):
             self.accept(cfg['toggle_edit-mode'], self.toggleEditMode)
             self.accept(cfg['toggle_insert-mode'], self.toggleInsertMode)
             self.accept(cfg['toggle_explore-mode'], self.toggleExploreMode)
+            self.accept(cfg['toggle_grid-mode'], self.toggleGridMode)
             # Accept both single-presses and long presses for rotating models
             self.accept(cfg['rotate-right'] + "-repeat", self.rotateModelRight)
             self.accept(cfg['rotate-left'] + "-repeat", self.rotateModelLeft)
@@ -400,7 +401,9 @@ class World(DirectObject):
         globals.editMode = False
         globals.insertMode = False
         globals.exploreMode = True
+        globals.gridMode = False
         print "STARTUP Explore mode ACTIVATED"
+        print "STARTUP Grid mode DEACTIVATED"
 
     def toggleEditMode(self):
         globals.editMode = True
@@ -419,6 +422,14 @@ class World(DirectObject):
         globals.insertMode = False
         globals.exploreMode = True
         print "Explore mode ACTIVATED"
+
+    def toggleGridMode(self):
+        if globals.gridMode == False:
+            globals.gridMode = True
+            print "Grid mode ACTIVATED"
+        else:
+            globals.gridMode = False
+            print "Grid mode DEACTIVATED"
 
     def setSpeed(self, key, value):
         self.cam_speed = value

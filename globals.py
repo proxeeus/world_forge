@@ -1,5 +1,5 @@
 def init():
-    global spawndialog,griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, hasClickedSpawn, hasClickedGrid, exploreMode, insertMode, editMode, currentZone, database, config, selectedSpawn, selectedGrid, grid_list, zoneid, gridlinks_list
+    global spawndialog,griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, hasClickedSpawn, hasClickedGrid, exploreMode, insertMode, editMode, gridMode, currentZone, database, config, selectedSpawn, selectedGrid, grid_list, zoneid, gridlinks_list
     config, selectedSpawn, spawndialog, griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, database, selectedGrid, grid_list, gridlinks_list = None
     zoneid = 0
 
