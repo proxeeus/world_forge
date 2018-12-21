@@ -67,7 +67,7 @@ class GridpointManager():
         gridPoint.model.setTag("gridid", str(row["gridid"]))
         gridPoint.model.setTag("number", str(row["number"]))
         gridPoint.model.setTag("type", "gridpoint")
-        self.picker.makePickable(gridPoint.model)
+        globals.picker.makePickable(gridPoint.model)
         globals.grid_list.append(gridPoint)
 
     def InitGridPointsData(self, gridPoint, row):

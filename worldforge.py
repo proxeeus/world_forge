@@ -54,6 +54,7 @@ from gui.filedialog import FileDialog
 
 import wx
 from gui.spawnerdialog import SpawnsFrame
+from gui.griddialog import GridsFrame
 import globals
 import MySQLdb
 from components.database import Database
@@ -291,6 +292,7 @@ class World(DirectObject):
         # Add the spinCameraTask procedure to the task manager.
         # taskMgr.add(self.spinCameraTask, "SpinCameraTask")
         globals.hasClickedSpawn = False;
+        globals.hasClickedGrid = False;
         taskMgr.add(self.camTask, "camTask")
 
         self.toggleControls(1)
@@ -523,6 +525,10 @@ class World(DirectObject):
            base.camera.setPos(globals.selectedSpawnPoint3D)
            self.campos = globals.selectedSpawnPoint3D
            globals.hasClickedSpawn = False
+        elif globals.hasClickedGrid:
+            base.camera.setPos(globals.selectedGridPoint3D)
+            self.campos = globals.selectedGridPoint3D
+            globals.hasClickedGrid = False
         else:
             # query the mouse
             mouse_dx = 0
@@ -766,7 +772,7 @@ class World(DirectObject):
         spawn.model.setTag("spawngroup_name", row["spawngroup_name"])
         spawn.model.setTag("spawn2id", str(row["Spawn2Id"]))
         spawn.model.setTag("type", "spawn")
-        picker.makePickable(spawn.model)
+        globals.picker.makePickable(spawn.model)
         globals.spawn_list.append(spawn)
 
 
@@ -837,7 +843,7 @@ cfg = configurator.config
 globals.config = cfg
 globals.zoneid = globals.getzoneidbyname(globals.config['default_zone'])
 # Creates a ModelPicker object in charge of setting spawn models as Pickable.
-picker = ModelPicker()
+globals.picker = ModelPicker()
 globals.grid_list = list()
 globals.gridlinks_list = list()
 
@@ -845,28 +851,33 @@ globals.gridlinks_list = list()
 app = wx.App()
 globals.spawndialog = SpawnsFrame(wx.Frame(None, -1, ' '))
 globals.spawndialog.Show()
+globals.griddialog = GridsFrame(wx.Frame(None, -1, ' '))
+globals.griddialog.Show()
 #
 
 # Connects to the database
 globals.database = Database(cfg['host'], cfg['user'], cfg['password'], cfg['port'], cfg['db'])
 connection = globals.database.ConnectToDatabase()
 # Gets spawn data for the current zone
-cursor = globals.database.GetDbSpawnData()
+spawnscursor = globals.database.GetDbSpawnData()
+gridscursor = globals.database.GetDbGridIdsByZoneId(globals.zoneid)
 
-numrows = cursor.rowcount
+spawnsnumrows = spawnscursor.rowcount
+gridsnumrows = gridscursor.rowcount
 
 # Visually loads spawn data in the zone
-world.PopulateSpawns(cursor, numrows)
+world.PopulateSpawns(spawnscursor, spawnsnumrows)
+
 
 # NEEDS REFACTORING
 # Populates the spawns treeview
-cursor = globals.database.GetDbSpawnData()
-numrows = cursor.rowcount
+spawnscursor = globals.database.GetDbSpawnData()
+spawnsnumrows = spawnscursor.rowcount
 treeview = globals.spawndialog.GetSpawnsTreeView
 root = treeview.AddRoot('Spawns for this zone')
 
-for x in range(0, numrows):
-    row = cursor.fetchone()
+for x in range(0, spawnsnumrows):
+    row = spawnscursor.fetchone()
     result = globals.spawndialog.GetItemByLabel(treeview, row["spawngroup_name"], treeview.GetRootItem())
     if result.IsOk():
         #spawngroup = treeview.AppendItem(result, row["spawngroup_name"])
@@ -874,6 +885,11 @@ for x in range(0, numrows):
     else:
         spawngroup = treeview.AppendItem(root, row["spawngroup_name"])
         spawnpoint = treeview.AppendItem(spawngroup, "[" + str(row["Spawn2Id"]) + "] " + row["NpcName"] + "  (" + str(row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(row["Spawn2Z"]) + ")")
+
+for y in range(0, gridsnumrows):
+    row = gridscursor.fetchone()
+    combo = globals.griddialog.GetGridsComboBox
+    combo.Append(str(row["gridid"]))
 
 # start in Explore mode by default
 world.toggleDefaultMode()

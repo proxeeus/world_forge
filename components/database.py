@@ -29,6 +29,24 @@ class Database:
 
         return self.conn
 
+    def UpdateDbGridPoint(self, gridpoint):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """UPDATE grid_entries SET x = %s, y = %s, z = %s, heading = %s WHERE gridid = %s AND zoneid = %s AND number = %s ;"""
+        values = (gridpoint.x, gridpoint.y, gridpoint.z, gridpoint.heading, gridpoint.gridid, gridpoint.zoneid, gridpoint.number)
+
+        cursor.execute(query, values)
+
+        print "grid updated!"
+
+    def GetDbGridIdsByZoneId(self, zoneid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """SELECT DISTINCT gridid FROM grid_entries WHERE zoneid=""" + str(zoneid) +";"
+
+        cursor.execute(query)
+        return cursor
+
     def GetDbGridPointsData(self,gridid, zoneid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
