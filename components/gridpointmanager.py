@@ -25,7 +25,10 @@ class GridpointManager():
         globals.gridlinks_list = list()
 
     def LinkGridPoints(self):
-        for x in range(0, len(globals.grid_list)):
+        # 1 is to avoid drawing a last line from the last grid point back to the 1st one.
+        # having this would mimic grid types being to the type where mobs path back straight to their original spawn point
+        # so maybe we could generate this last line dynamically? If grid type == strict patrol start at 1 otherwise 0 ?
+        for x in range(1, len(globals.grid_list)):
             lines = LineSegs()
             lines.moveTo(globals.grid_list[x].y, globals.grid_list[x].x, globals.grid_list[x].z)
             lines.drawTo(globals.grid_list[x - 1].y, globals.grid_list[x - 1].x, globals.grid_list[x - 1].z)
