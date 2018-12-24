@@ -74,6 +74,7 @@ def addInstructions(pos, msg):
 def addTitle(text):
     return OnscreenText(text=text, style=1, fg=(1,1,1,1),
                         pos=(1.3,-0.95), align=TextNode.ARight, scale = .03)
+
         
 class MouseAccume(object):
     def __init__(self,getCenter,hScaling=1,vScaling=1,aMax=5,dMax=10):
@@ -404,32 +405,49 @@ class World(DirectObject):
         globals.gridMode = False
         print "STARTUP Explore mode ACTIVATED"
         print "STARTUP Grid mode DEACTIVATED"
+        self.inst4 = addInstructions(0.8, "Explore mode ON")
+        self.inst5 = addInstructions(0.75, "Grid mode OFF")
 
     def toggleEditMode(self):
         globals.editMode = True
         globals.insertMode = False
         globals.exploreMode = False
         print "Edit mode ACTIVATED"
+        if self.inst4:
+            self.inst4.destroy()
+        self.inst4 = addInstructions(0.8, "Edit mode ON")
 
     def toggleInsertMode(self):
         globals.editMode = False
         globals.insertMode = True
         globals.exploreMode = False
         print "Insert mode ACTIVATED"
+        if self.inst4:
+            self.inst4.destroy()
+        self.inst4 = addInstructions(0.8, "Insert mode ON")
 
     def toggleExploreMode(self):
         globals.editMode = False
         globals.insertMode = False
         globals.exploreMode = True
         print "Explore mode ACTIVATED"
+        if self.inst4:
+            self.inst4.destroy()
+        self.inst4 = addInstructions(0.8, "Explore mode ON")
 
     def toggleGridMode(self):
         if globals.gridMode == False:
             globals.gridMode = True
             print "Grid mode ACTIVATED"
+            if self.inst5:
+                self.inst5.destroy()
+            self.inst5 = addInstructions(0.75, "Grid mode ON")
         else:
             globals.gridMode = False
             print "Grid mode DEACTIVATED"
+            if self.inst5:
+                self.inst5.destroy()
+            self.inst5 = addInstructions(0.75, "Grid mode OFF")
 
     def setSpeed(self, key, value):
         self.cam_speed = value
