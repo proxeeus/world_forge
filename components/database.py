@@ -11,6 +11,7 @@ class Database:
 
     lastinsertedspawn2id = 0
     lastinsertedspawngroupid = 0
+    lastinsertedgridid = 0
 
     def __init__(self, host, user, password, port, db):
         self.host = host
@@ -111,6 +112,58 @@ class Database:
         if row:
             lastId = row["id"] + 1
         return lastId
+
+    #Gets the next available Grid id value from the Grids table
+    def GetNextGridId(self):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT * FROM grid ORDER BY ID DESC LIMIT 1"
+        cursor.execute(query)
+        row = cursor.fetchone()
+        lastId = 0
+        if row:
+            lastId = row["id"] + 1
+        return lastId
+
+    # Gets the next available Grid 'number' value from the Grid Entries table
+    def GetNextGridNumber(self, gridid, zoneid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = "SELECT * FROM grid_entries WHERE gridid=%s AND zoneid=%s ORDER BY ID DESC LIMIT 1"
+        values = (gridid, zoneid)
+        cursor.execute(query, values)
+        row = cursor.fetchone()
+        lastId = 0
+        if row:
+            lastId = row["number"] + 1
+        return lastId
+
+    # Inserts a new grid
+    def InsertNewGrid(self, gridpoint):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query ="""INSERT INTO grid(zoneid, type, type2) VALUES (%s, %s, %s);"""
+        values = (gridpoint.zoneid, gridpoint.type, gridpoint.type2)
+        cursor.execute(query, values)
+
+        self.conn.commit()
+
+        print("1 grid inserted, ID:", cursor.lastrowid)
+        self.lastinsertedgridid = cursor.lastrowid
+
+    def InsertNewGridEntry(self, gridpoint):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """INSERT INTO grid_entries(gridid, zoneid,number,x,y,z,heading,pause) VALUES
+                    (%s,%s,%s,%s,%s,%s,%s,%);"""
+        values = (gridpoint.gridid, gridpoint.zoneid, self.GetNextGridNumber(gridpoint.gridid, gridpoint.zoneid),
+                  gridpoint.x, gridpoint.y, gridpoint.z, gridpoint.heading, gridpoint.pause)
+        cursor.execute(query, values)
+
+        self.conn.commit()
+
+        print("1 grid entry inserted!"),
+
 
     # Gets the name of an NPC based on its ID
     def GetNpcNameById(self, npcid):

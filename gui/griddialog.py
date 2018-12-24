@@ -21,16 +21,22 @@ class GridsFrame ( wx.Frame ):
 		# Treeview
 		self.m_treeCtrlGrids = wx.TreeCtrl( self, wx.ID_ANY, wx.Point(199, 19), wx.Size( 180,100 ), wx.TR_DEFAULT_STYLE )
 		# Spawngroup
-		self.m_gridStaticText = wx.StaticText(self, wx.ID_ANY, "Grid", wx.Point(12,22), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_gridStaticText = wx.StaticText(self, wx.ID_ANY, "Grid", wx.Point(4,22), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+		self.m_gridTypeStaticText = wx.StaticText(self, wx.ID_ANY, "Wander", wx.Point(4, 51), wx.DefaultSize,wx.TR_DEFAULT_STYLE)
+		self.m_gridType2StaticText = wx.StaticText(self, wx.ID_ANY, "Pause", wx.Point(4, 80), wx.DefaultSize, wx.TR_DEFAULT_STYLE)
 		self.m_gridComboBox = wx.ComboBox(self, wx.ID_ANY, "", wx.Point(57, 19), wx.Size(136,24), [],wx.CB_DROPDOWN)
+		self.m_gridTypeComboBox = wx.ComboBox(self, wx.ID_ANY, "", wx.Point(57, 48), wx.Size(136, 24), ["0","1","2","3","4","5","6"], wx.CB_DROPDOWN)
+		self.m_gridType2ComboBox = wx.ComboBox(self, wx.ID_ANY, "", wx.Point(57, 77), wx.Size(136, 24), ["0","1","2"], wx.CB_DROPDOWN)
 
 		#self.m_spawnEntryZoneTextCtrl.SetLabel(globals.config['default_zone'])
 
 		# Buttons
 		self.m_LoadGridButton = wx.Button(self, wx.ID_ANY, "Load Grid", wx.Point(385, 19), wx.Size(109, 23), 0, wx.DefaultValidator)
 		self.m_DeleteGridButton = wx.Button(self, wx.ID_ANY, "Delete Grid", wx.Point(385, 48), wx.Size(109, 23), 0, wx.DefaultValidator)
+		self.m_NewGridButton = wx.Button(self, wx.ID_ANY, "New Grid", wx.Point(385, 77), wx.Size(109, 23), 0, wx.DefaultValidator)
 
 		self.m_LoadGridButton.Bind(wx.EVT_BUTTON, self.OnLoadGrid)
+		self.m_NewGridButton.Bind(wx.EVT_BUTTON, self.OnNewGrid)
 		#treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
 		self.m_treeCtrlGrids.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClickGrid)
@@ -43,6 +49,9 @@ class GridsFrame ( wx.Frame ):
 
 
 	### EVENTS
+
+	def OnNewGrid(self):
+		print "new grid lol"
 
 	def OnLoadGrid(self, event):
 		gridmanager = GridpointManager()
