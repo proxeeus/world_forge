@@ -85,3 +85,9 @@ class GridpointManager():
         gridPoint.number = row["number"]
         gridPoint.heading = row["heading"]
         gridPoint.pause = row["pause"]
+
+    def InsertNewGridEntry(self, gridPoint):
+        globals.database.InsertNewGridEntry(gridPoint)
+        self.ResetGridList()
+        self.GenerateGrids(gridPoint.gridid, globals.zoneid)
+        globals.griddialog.LoadGrid()

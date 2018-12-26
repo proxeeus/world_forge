@@ -918,7 +918,7 @@ for x in range(0, spawnsnumrows):
 for y in range(0, gridsnumrows):
     row = gridscursor.fetchone()
     combo = globals.griddialog.GetGridsComboBox
-    combo.Append(str(row["gridid"]))
+    combo.Append(str(row["id"]))
 
 # start in Explore mode by default
 world.toggleDefaultMode()

@@ -43,7 +43,7 @@ class Database:
     def GetDbGridIdsByZoneId(self, zoneid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """SELECT DISTINCT gridid FROM grid_entries WHERE zoneid=""" + str(zoneid) +";"
+        query = """SELECT DISTINCT id FROM grid WHERE zoneid=""" + str(zoneid) +";"
 
         cursor.execute(query)
         return cursor
@@ -114,10 +114,10 @@ class Database:
         return lastId
 
     #Gets the next available Grid id value from the Grids table
-    def GetNextGridId(self):
+    def GetNextGridId(self, zoneid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query = "SELECT * FROM grid ORDER BY ID DESC LIMIT 1"
+        query = "SELECT * FROM grid WHERE zoneid=" + str(zoneid) +" ORDER BY ID DESC LIMIT 1"
         cursor.execute(query)
         row = cursor.fetchone()
         lastId = 0
@@ -129,34 +129,41 @@ class Database:
     def GetNextGridNumber(self, gridid, zoneid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query = "SELECT * FROM grid_entries WHERE gridid=%s AND zoneid=%s ORDER BY ID DESC LIMIT 1"
+        query = "SELECT * FROM grid_entries WHERE gridid=%s AND zoneid=%s ORDER BY number DESC LIMIT 1"
         values = (gridid, zoneid)
         cursor.execute(query, values)
         row = cursor.fetchone()
         lastId = 0
         if row:
             lastId = row["number"] + 1
+
+        # no grid entry exist yet, but Number cannot be 0, entries start at 1
+        if lastId == 0:
+            lastId = 1
         return lastId
 
     # Inserts a new grid
     def InsertNewGrid(self, gridpoint):
+
+        nextgridid = self.GetNextGridId(gridpoint.zoneid)
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query ="""INSERT INTO grid(zoneid, type, type2) VALUES (%s, %s, %s);"""
-        values = (gridpoint.zoneid, gridpoint.type, gridpoint.type2)
+        query ="""INSERT INTO grid(id, zoneid, type, type2) VALUES (%s, %s, %s, %s);"""
+        values = (nextgridid, gridpoint.zoneid, gridpoint.type, gridpoint.type2)
         cursor.execute(query, values)
 
         self.conn.commit()
 
-        print("1 grid inserted, ID:", cursor.lastrowid)
-        self.lastinsertedgridid = cursor.lastrowid
+        print("1 grid inserted, ID:", nextgridid)
+        self.lastinsertedgridid = nextgridid
 
     def InsertNewGridEntry(self, gridpoint):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
         query = """INSERT INTO grid_entries(gridid, zoneid,number,x,y,z,heading,pause) VALUES
-                    (%s,%s,%s,%s,%s,%s,%s,%);"""
-        values = (gridpoint.gridid, gridpoint.zoneid, self.GetNextGridNumber(gridpoint.gridid, gridpoint.zoneid),
+                    (%s,%s,%s,%s,%s,%s,%s,%s);"""
+        nextgridnumber = str(self.GetNextGridNumber(gridpoint.gridid, gridpoint.zoneid))
+        values = (gridpoint.gridid, gridpoint.zoneid, nextgridnumber,
                   gridpoint.x, gridpoint.y, gridpoint.z, gridpoint.heading, gridpoint.pause)
         cursor.execute(query, values)
 

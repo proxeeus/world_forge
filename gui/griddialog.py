@@ -6,6 +6,7 @@ import re
 import globals
 from components.database import Database
 from components.gridpointmanager import GridpointManager
+from components.gridpoint import Gridpoint
 from panda3d.core import Point3
 from config import Configurator
 pattern = "\(([^\)]+)\)"
@@ -50,10 +51,26 @@ class GridsFrame ( wx.Frame ):
 
 	### EVENTS
 
-	def OnNewGrid(self):
+	def OnNewGrid(self, event):
 		print "new grid lol"
+		selType = self.m_gridTypeComboBox.GetSelection()
+		type = self.m_gridTypeComboBox.GetString(selType)
+		selType2 = self.m_gridType2ComboBox.GetSelection()
+		type2 = self.m_gridType2ComboBox.GetString(selType2)
+		if type and type2:
+			gridpoint = Gridpoint()
+			gridpoint.zoneid = globals.zoneid
+			gridpoint.type = type
+			gridpoint.type2 = type2
+			globals.database.InsertNewGrid(gridpoint)
+			self.m_gridComboBox.Append(str(globals.database.lastinsertedgridid))
+		else:
+			print "NOPE"
 
 	def OnLoadGrid(self, event):
+		self.LoadGrid()
+
+	def LoadGrid(self):
 		gridmanager = GridpointManager()
 		gridmanager.ResetGridList()
 		self.m_treeCtrlGrids.DeleteAllItems()
@@ -68,7 +85,6 @@ class GridsFrame ( wx.Frame ):
 
 		gridmanager.GenerateGrids(gridid, globals.zoneid)
 		self.m_treeCtrlGrids.ExpandAll()
-
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):

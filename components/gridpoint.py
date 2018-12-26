@@ -12,7 +12,7 @@ class Gridpoint:
     x = 0
     y = 0
     z = 0
-    heading = 0
+    heading = -1
     pause = 0
 
     # other members

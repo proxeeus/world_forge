@@ -14,6 +14,7 @@ from gui.picker import Picker
 import globals
 from components.spawn import Spawn
 from components.gridpointmanager import GridpointManager
+from components.gridpoint import Gridpoint
 import wx
 
 class ModelPicker(DirectObject.DirectObject):
@@ -151,6 +152,28 @@ class ModelPicker(DirectObject.DirectObject):
             globals.spawndialog.AddNewSpawnToTree(spawn)
             globals.selectedSpawn = spawn
             globals.spawndialog.UpdateGUI(globals.selectedSpawn)
+         # While in Insert + Grid mode, we only insert grid entries to an existing grid. No spawn management
+         # whatsoever.
+         elif globals.insertMode == True and globals.gridMode == True:
+            print "INSERT GRID!!!!"
+            sel = globals.griddialog.m_gridComboBox.GetSelection()
+            gridid = globals.griddialog.m_gridComboBox.GetString(sel)
+            if gridid:
+               print gridid
+               thePoint = picker.pick()
+               gridpoint = Gridpoint()
+               # Coordinates are reversed in the 3D view so we have to adapt.
+               gridpoint.x = thePoint[1].getY()
+               gridpoint.y = thePoint[1].getX()
+               gridpoint.z = thePoint[1].getZ()
+               gridpoint.zoneid = globals.zoneid
+               gridpoint.gridid = gridid
+               gridmanager = GridpointManager()
+               gridpoint.addnewgridpointtoworld(thePoint, self)
+               gridmanager.InsertNewGridEntry(gridpoint)
+               globals.grid_list.append(gridpoint)
+            else:
+               print "NO GRIDID!!!"
       else:
          #picker = Picker(render)
          # TODO: WE NEED TO MAP THE MODEL WHICH HAS BEEN CLICKED ON TO AN INTERNAL LIST OF
