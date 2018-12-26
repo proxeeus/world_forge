@@ -77,7 +77,7 @@ class ModelPicker(DirectObject.DirectObject):
 
       global picker
       picker = Picker(render)
-
+      globals.world.clearSelection()
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
@@ -155,6 +155,7 @@ class ModelPicker(DirectObject.DirectObject):
             globals.spawndialog.AddNewSpawnToTree(spawn)
             globals.selectedSpawn = spawn
             globals.spawndialog.UpdateGUI(globals.selectedSpawn)
+            globals.world.clearSelection()
          # While in Insert + Grid mode, we only insert grid entries to an existing grid. No spawn management
          # whatsoever.
          elif globals.insertMode == True and globals.gridMode == True:
@@ -211,6 +212,7 @@ class ModelPicker(DirectObject.DirectObject):
                    globals.spawndialog.UpdateGUI(globals.selectedSpawn)
                    if globals.config['autosave_edit-mode'] == 'True':
                       globals.database.UpdateSpawn(globals.selectedSpawn)
+                   globals.world.clearSelection()
          else:
             selectedGrid = globals.getgridfromglobalgridsbyname(self.lastSelectedObject.getTag("gridid"), self.lastSelectedObject.getTag("number"))
             if selectedGrid:
