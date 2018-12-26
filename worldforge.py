@@ -59,6 +59,7 @@ import globals
 import MySQLdb
 from components.database import Database
 from components.spawn import Spawn
+from components.gridpointmanager import GridpointManager
 
 last_selected_model = None
 spawndialog = None
@@ -365,6 +366,7 @@ class World(DirectObject):
             self.accept(cfg['rotate-left'] + "-repeat", self.rotateModelLeft)
             self.accept(cfg['rotate-right'], self.rotateModelRight)
             self.accept(cfg['rotate-left'], self.rotateModelLeft)
+            self.accept(cfg['clear-selection'], self.clearSelection)
         else:
             messenger.clear()
 
@@ -398,6 +400,18 @@ class World(DirectObject):
                     globals.database.UpdateSpawn(globals.selectedSpawn)
                 print globals.selectedSpawn.spawnentry_heading
 
+    def clearSelection(self):
+        globals.selectedspawn = None
+        globals.selectedgrid = None
+        globals.picker.lastSelectedObject = None
+        if self.inst6:
+            self.inst6.destroy()
+        self.inst6 = addInstructions(0.7, "Current selection: None")
+        globals.spawndialog.Reset()
+        gridmanager = GridpointManager()
+        gridmanager.ResetGridList()
+        print "Cleared all selections !"
+
     def toggleDefaultMode(self):
         globals.editMode = False
         globals.insertMode = False
@@ -407,6 +421,7 @@ class World(DirectObject):
         print "STARTUP Grid mode DEACTIVATED"
         self.inst4 = addInstructions(0.8, "Explore mode ON")
         self.inst5 = addInstructions(0.75, "Grid mode OFF")
+        self.inst6 = addInstructions(0.7, "Current selection: None")
 
     def toggleEditMode(self):
         globals.editMode = True
@@ -922,6 +937,7 @@ for y in range(0, gridsnumrows):
 
 # start in Explore mode by default
 world.toggleDefaultMode()
+globals.world = world
 #######
 
 while True:

@@ -118,7 +118,7 @@ class SpawnsFrame ( wx.Frame ):
 
 	### EVENTS
 
-	def OnReset(self, event):
+	def Reset(self):
 		# Spawngroup
 		self.m_spawnGroupNameTextCtrl.SetValue("World_Forge_spawngroup_" + str(globals.database.GetNextSpawnGroupId()))
 		# Spawngroup coords
@@ -166,6 +166,9 @@ class SpawnsFrame ( wx.Frame ):
 		# Auto assign zone value
 		self.m_spawnEntryZoneTextCtrl.SetLabel(globals.config['default_zone'])
 		self.m_spawnEntryStaticText.SetLabel("Spawnentry")
+
+	def OnReset(self, event):
+		self.Reset()
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):

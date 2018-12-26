@@ -1,6 +1,10 @@
+from direct.directbase.DirectStart import *
+from pandac.PandaModules import *
+from direct.gui.OnscreenText import OnscreenText
+
 def init():
-    global spawndialog,griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, hasClickedSpawn, hasClickedGrid, exploreMode, insertMode, editMode, gridMode, currentZone, database, config, selectedSpawn, selectedGrid, grid_list, zoneid, gridlinks_list
-    config, selectedSpawn, spawndialog, griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, database, selectedGrid, grid_list, gridlinks_list = None
+    global spawndialog,griddialog, picker, world, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, hasClickedSpawn, hasClickedGrid, exploreMode, insertMode, editMode, gridMode, currentZone, database, config, selectedSpawn, selectedGrid, grid_list, zoneid, gridlinks_list
+    config, selectedSpawn, spawndialog, griddialog, picker, selectedSpawnXYZ,selectedGridXYZ, selectedSpawnPoint3D,selectedGridPoint3D, spawn_list, database, selectedGrid, grid_list, gridlinks_list, world = None
     zoneid = 0
 
 
@@ -22,6 +26,11 @@ def getgridfromglobalgridsbyname(gridid, number):
     for x in grid_list:
         if str(x.gridid == gridid) and str(x.number == number):
             return x
+
+# Function to put instructions on the screen.
+def addInstructions(pos, msg):
+    return OnscreenText(text=msg, style=1, fg=(1,1,1,1),
+                        pos=(-1.3, pos), align=TextNode.ALeft, scale = .04)
 
 def getzoneidbyname(zonename):
     if zonename == 'qeynos':

@@ -77,9 +77,9 @@ class ModelPicker(DirectObject.DirectObject):
 
       global picker
       picker = Picker(render)
+
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
-         self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
          # Try to update the UI
          if self.lastSelectedObject and self.lastSelectedObject.getTag("type") == "spawn":
@@ -95,6 +95,9 @@ class ModelPicker(DirectObject.DirectObject):
                   gridmanager.picker = self
                   gridmanager.GenerateGrids(selectedspawn.spawnentry_pathgrid, globals.zoneid)
                globals.selectedSpawn = selectedspawn
+               if globals.world.inst6:
+                  globals.world.inst6.destroy()
+               globals.world.inst6 = globals.addInstructions(0.7, "Current selection: " + "[" + str(globals.selectedSpawn.spawnentry_npcid) + "] " + globals.selectedSpawn.spawnentry_npcname + " (" + globals.selectedSpawn.spawngroup_name + ")")
          elif self.lastSelectedObject and self.lastSelectedObject.getTag("type") == "gridpoint":
             print "Grid not yet implemented!!!"
          # If we are in Insert Mode and not in Grid Mode, we'll insert a new spawn point into the world
@@ -189,7 +192,15 @@ class ModelPicker(DirectObject.DirectObject):
             selectedspawn = globals.getspawnfromglobalspawnsbyname(self.lastSelectedObject.getTag("spawn2id"))
             if selectedspawn:
                globals.spawndialog.UpdateGUI(selectedspawn)
+               gridmanager = GridpointManager()
+               gridmanager.ResetGridList()
+               if selectedspawn.spawnentry_pathgrid > 0:
+                  gridmanager.picker = self
+                  gridmanager.GenerateGrids(selectedspawn.spawnentry_pathgrid, globals.zoneid)
                globals.selectedSpawn = selectedspawn
+               if globals.world.inst6:
+                  globals.world.inst6.destroy()
+               globals.world.inst6 = globals.addInstructions(0.7, "Current selection: " + "[" + str(globals.selectedSpawn.spawnentry_npcid) + "] " + globals.selectedSpawn.spawnentry_npcname + " (" + globals.selectedSpawn.spawngroup_name + ")")
             if globals.editMode == True:
                self.lastSelectedObject.setPos(thePoint)
                if globals.selectedSpawn:
