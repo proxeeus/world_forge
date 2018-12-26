@@ -400,14 +400,18 @@ class World(DirectObject):
                     globals.database.UpdateSpawn(globals.selectedSpawn)
                 print globals.selectedSpawn.spawnentry_heading
 
-    def clearSelection(self):
+    def clearSelection(self, eraseNpcId = True):
         globals.selectedspawn = None
         globals.selectedgrid = None
         globals.picker.lastSelectedObject = None
         if self.inst6:
             self.inst6.destroy()
         self.inst6 = addInstructions(0.7, "Current selection: None")
+        npcid = globals.spawndialog.m_spawnEntryNpcIdTextCtrl.Value
         globals.spawndialog.Reset()
+        # fucking hacky shit man
+        if eraseNpcId == False:
+            globals.spawndialog.m_spawnEntryNpcIdTextCtrl.SetValue(npcid)
         gridmanager = GridpointManager()
         gridmanager.ResetGridList()
         print "Cleared all selections !"
