@@ -169,6 +169,7 @@ class SpawnsFrame ( wx.Frame ):
 
 	def OnReset(self, event):
 		self.Reset()
+		globals.world.clearSelection()
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):
@@ -251,6 +252,8 @@ class SpawnsFrame ( wx.Frame ):
 		#self.m_spawnEntryStaticText.SetLabel("Spawnentry")
 
 		globals.database.UpdateSpawn(globals.selectedSpawn)
+
+		globals.world.clearSelection()
 
 	def initmenubar(self):
 		menubar = wx.MenuBar()
