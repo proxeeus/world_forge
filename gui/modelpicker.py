@@ -77,7 +77,7 @@ class ModelPicker(DirectObject.DirectObject):
 
       global picker
       picker = Picker(render)
-      globals.world.clearSelection()
+      #globals.world.clearSelection()
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
@@ -152,10 +152,11 @@ class ModelPicker(DirectObject.DirectObject):
             spawn.spawngroup_id = str(globals.database.lastinsertedspawngroupid)
             self.lastSelectedObject = spawn.model
             self.lastSelectedObject.setTag("spawn2id", str(spawn.spawnentry_id))
+            self.lastSelectedObject.setTag("type", "spawn")
             globals.spawndialog.AddNewSpawnToTree(spawn)
             globals.selectedSpawn = spawn
             globals.spawndialog.UpdateGUI(globals.selectedSpawn)
-            globals.world.clearSelection()
+            #globals.world.clearSelection()
          # While in Insert + Grid mode, we only insert grid entries to an existing grid. No spawn management
          # whatsoever.
          elif globals.insertMode == True and globals.gridMode == True:
