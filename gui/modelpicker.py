@@ -77,7 +77,7 @@ class ModelPicker(DirectObject.DirectObject):
 
       global picker
       picker = Picker(render)
-      globals.world.clearSelection(False)
+      #globals.world.clearSelection(False)
       if self.lastSelectedObject is None:
          self.lastSelectedObject = self.getObjectHit( base.mouseWatcherNode.getMouse())
          print self.lastSelectedObject
