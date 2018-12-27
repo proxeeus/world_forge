@@ -777,12 +777,6 @@ class World(DirectObject):
         
         self.frmDialog.activate()   # relies on the main update loop to run
 
-    ###############################
-    # EXPERIMENTAL         
-    def doLogin(self):
-        
-        self.login_client = UDPClientStream('127.0.0.1', 5998)
-
     #####################################
     # Custom methods
     #####################################
