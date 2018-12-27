@@ -53,6 +53,7 @@ class GridpointManager():
             else:
                 self.PlaceGridPointOn3dMap(row)
         self.LinkGridPoints()
+        gridpoints.close()
         print "toto"
 
     def PlaceGridPointOn3dMap(self, row):

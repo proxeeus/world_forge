@@ -39,6 +39,7 @@ class Database:
         cursor.execute(query, values)
 
         print "grid updated!"
+        cursor.close()
 
     def GetDbGridIdsByZoneId(self, zoneid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
@@ -99,7 +100,9 @@ class Database:
         lastId = 0
         if row:
             lastId = row["id"] + 1
+        cursor.close()
         return lastId
+
 
     # Gets the next available id value for the Spawngroup table
     def GetNextSpawnGroupId(self):
@@ -111,7 +114,9 @@ class Database:
         lastId = 0
         if row:
             lastId = row["id"] + 1
+        cursor.close()
         return lastId
+
 
     #Gets the next available Grid id value from the Grids table
     def GetNextGridId(self, zoneid):
@@ -123,7 +128,9 @@ class Database:
         lastId = 0
         if row:
             lastId = row["id"] + 1
+        cursor.close()
         return lastId
+
 
     # Gets the next available Grid 'number' value from the Grid Entries table
     def GetNextGridNumber(self, gridid, zoneid):
@@ -140,7 +147,9 @@ class Database:
         # no grid entry exist yet, but Number cannot be 0, entries start at 1
         if lastId == 0:
             lastId = 1
+        cursor.close()
         return lastId
+
 
     # Inserts a new grid
     def InsertNewGrid(self, gridpoint):
@@ -156,6 +165,7 @@ class Database:
 
         print("1 grid inserted, ID:", nextgridid)
         self.lastinsertedgridid = nextgridid
+        cursor.close()
 
     def InsertNewGridEntry(self, gridpoint):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
@@ -170,7 +180,7 @@ class Database:
         self.conn.commit()
 
         print("1 grid entry inserted!"),
-
+        cursor.close()
 
     # Gets the name of an NPC based on its ID
     def GetNpcNameById(self, npcid):
@@ -182,7 +192,9 @@ class Database:
         name = ""
         if row:
             name = row["name"]
+        cursor.close()
         return name
+
 
     # Inserts a new row into the Spawn2 table with the provided Spawn data
     # 1. Insert a new spawngroup entry
@@ -211,7 +223,7 @@ class Database:
         query = "INSERT INTO spawnentry(spawngroupID, npcID, chance) VALUES (%s, %s, %s);"
         values = self.lastinsertedspawngroupid, spawn.spawnentry_npcid, spawn.spawnentry_chance
         cursor.execute(query, values)
-
+        cursor.close()
 
     # Update the spawn's db records
     def UpdateSpawn(self, spawn):
@@ -238,6 +250,7 @@ class Database:
         cursor.execute(query, values)
         self.conn.commit()
         print("spawngroup updated")
+        cursor.close()
 
     # Deletes a complete spawn from the database and all its associated Spawngroup, Spawn2 and Spawnentry entries
     def DeleteSpawn(self, spawn):
@@ -260,6 +273,7 @@ class Database:
         cursor.execute(query, values)
         self.conn.commit()
         print ("Spawngroup deleted successfully.")
+        cursor.close()
 
     def GetNpcNameById(self, npcid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
@@ -268,6 +282,8 @@ class Database:
         cursor.execute(query)
         row = cursor.fetchone()
         if row:
-            return row["name"]
+            name = row["name"]
+            cursor.close()
+            return name
 
 

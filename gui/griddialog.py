@@ -85,6 +85,7 @@ class GridsFrame ( wx.Frame ):
 
 		gridmanager.GenerateGrids(gridid, globals.zoneid)
 		self.m_treeCtrlGrids.ExpandAll()
+		cursor.close()
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):

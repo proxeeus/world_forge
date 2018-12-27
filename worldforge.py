@@ -681,7 +681,9 @@ class World(DirectObject):
             self.inst3.setText('Hdg: %.2f, %.2f, %.2f' % (hpr.getX(), hpr.getY(), hpr.getZ()))
         return task.cont
 
-    def exitGame(self):           
+    def exitGame(self):
+        globals.database.conn.close()
+        print "DB connection closed !"
         sys.exit(0)
 
     def resizeGame(self,win):
@@ -939,6 +941,8 @@ for y in range(0, gridsnumrows):
     combo = globals.griddialog.GetGridsComboBox
     combo.Append(str(row["id"]))
 
+spawnscursor.close()
+gridscursor.close()
 # start in Explore mode by default
 world.toggleDefaultMode()
 globals.world = world
