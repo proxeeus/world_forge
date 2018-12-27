@@ -182,6 +182,22 @@ class Database:
         print("1 grid entry inserted!"),
         cursor.close()
 
+    def DeleteGrid(self, gridid):
+        cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
+
+        query = """DELETE FROM grid_entries where gridid=%s AND zoneid=%s;"""
+        values = (gridid, globals.zoneid)
+        cursor.execute(query, values)
+
+        print "Grid entries deleted !"
+
+        query = """DELETE FROM grid where id=%s and zoneid=%s;"""
+        cursor.execute(query, values)
+
+        print "Grid deleteted !"
+        self.conn.commit()
+        cursor.close()
+
     # Gets the name of an NPC based on its ID
     def GetNpcNameById(self, npcid):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)

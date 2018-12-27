@@ -38,6 +38,7 @@ class GridsFrame ( wx.Frame ):
 
 		self.m_LoadGridButton.Bind(wx.EVT_BUTTON, self.OnLoadGrid)
 		self.m_NewGridButton.Bind(wx.EVT_BUTTON, self.OnNewGrid)
+		self.m_DeleteGridButton.Bind(wx.EVT_BUTTON, self.OnDelete)
 		#treeViewSizer.Add( self.m_treeCtrlSpawnGroups, 0, wx.ALL, 5 )
 
 		self.m_treeCtrlGrids.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClickGrid)
@@ -70,6 +71,18 @@ class GridsFrame ( wx.Frame ):
 	def OnLoadGrid(self, event):
 		self.LoadGrid()
 
+	def ReloadGrids(self):
+		self.m_gridComboBox.Clear()
+		self.m_gridComboBox.SetValue('')
+		gridscursor = globals.database.GetDbGridIdsByZoneId(globals.zoneid)
+		gridsnumrows = gridscursor.rowcount
+		for y in range(0, gridsnumrows):
+			row = gridscursor.fetchone()
+			combo = globals.griddialog.GetGridsComboBox
+			combo.Append(str(row["id"]))
+
+		gridscursor.close()
+
 	def LoadGrid(self):
 		gridmanager = GridpointManager()
 		gridmanager.ResetGridList()
@@ -89,22 +102,18 @@ class GridsFrame ( wx.Frame ):
 
 	# TODO: FINISH THIS
 	def OnDelete(self, event):
-		print "toto"
+		self.Delete()
 
-	def RecursiveDelete(self, root):
-		item, cookie = self.m_treeCtrlGrids.GetFirstChild(root, cookie)
+	def Delete(self):
+		sel = self.m_gridComboBox.GetSelection()
+		gridid = self.m_gridComboBox.GetString(sel)
 
-		while item.IsOk():
-			text = self.m_treeCtrlGrids.GetItemText(item)
-			idpattern = "[" + str(globals.selectedSpawn.spawnentry_id) + "]"
-			if idpattern in text:
-				self.m_treeCtrlGrids.RemoveChild(item)
-			if self.m_treeCtrlGrids.ItemHasChildren(item):
-				sibling = self.RecursiveDelete(item)
-				if sibling.isOk():
-					self.m_treeCtrlGrids.RemoveChild(sibling)
-			item = self.m_treeCtrlGrids.GetNextChild(root, cookie)
-	#END TODO
+		if gridid:
+			globals.database.DeleteGrid(gridid)
+			self.LoadGrid()
+			self.ReloadGrids()
+		else:
+			print "NO GRID!!!"
 
 	def OnSave(self, event):
 		print "toto"
