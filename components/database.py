@@ -256,7 +256,7 @@ class Database:
     def DeleteSpawn(self, spawn):
         cursor = self.conn.cursor(MySQLdb.cursors.DictCursor)
 
-        query = """DELETE FROM spawnentry WHERE spawngroupID = %t and npcID = %t;"""
+        query = """DELETE FROM spawnentry WHERE spawngroupID = %s and npcID = %s;"""
         values = (spawn.spawngroup_id, spawn.spawnentry_id)
         cursor.execute(query, values)
         self.conn.commit()
@@ -268,9 +268,8 @@ class Database:
         self.conn.commit()
         print("Spawn2 deleted successfully.")
 
-        query = """DELETE FROM spawngroup where id = %s"""
-        values = (spawn.spawngroup_id)
-        cursor.execute(query, values)
+        query = """DELETE FROM spawngroup where id = """ + str(spawn.spawngroup_id)
+        cursor.execute(query)
         self.conn.commit()
         print ("Spawngroup deleted successfully.")
         cursor.close()

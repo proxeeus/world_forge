@@ -172,28 +172,38 @@ class SpawnsFrame ( wx.Frame ):
 		globals.world.clearSelection()
 
 	# TODO: FINISH THIS
-	def OnDelete(self, event):
+	def Delete(self):
+
 		if globals.selectedSpawn:
-			#globals.database.DeleteSpawn(globals.selectedSpawn)
+			globals.database.DeleteSpawn(globals.selectedSpawn)
 			globals.selectedSpawn.deletemodel()
-			cookie = 0
-			root = self.m_treeCtrlSpawnGroups.GetFirstChild(self.m_treeCtrlSpawnGroups.GetRootItem(), cookie)
-			self.RecursiveDelete(root)
-			#self.m_treeCtrlSpawnGroups.
+			self.ReloadTreeview()
 
-	def RecursiveDelete(self, root):
-		item, cookie = self.m_treeCtrlSpawnGroups.GetFirstChild(root, cookie)
 
-		while item.IsOk():
-			text = self.m_treeCtrlSpawnGroups.GetItemText(item)
-			idpattern = "[" + str(globals.selectedSpawn.spawnentry_id) + "]"
-			if idpattern in text:
-				self.m_treeCtrlSpawnGroups.RemoveChild(item)
-			if self.m_treeCtrlSpawnGroups.ItemHasChildren(item):
-				sibling = self.RecursiveDelete(item)
-				if sibling.isOk():
-					self.m_treeCtrlSpawnGroups.RemoveChild(sibling)
-			item = self.m_treeCtrlSpawnGroups.GetNextChild(root, cookie)
+	def OnDelete(self, event):
+		self.Delete()
+
+	def ReloadTreeview(self):
+		spawnscursor = globals.database.GetDbSpawnData()
+		spawnsnumrows = spawnscursor.rowcount
+		self.m_treeCtrlSpawnGroups.DeleteAllItems()
+		root = self.m_treeCtrlSpawnGroups.AddRoot('Spawns for this zone')
+
+		for x in range(0, spawnsnumrows):
+			row = spawnscursor.fetchone()
+			result = globals.spawndialog.GetItemByLabel(self.m_treeCtrlSpawnGroups, row["spawngroup_name"], self.m_treeCtrlSpawnGroups.GetRootItem())
+			if result.IsOk():
+				spawnpoint = self.m_treeCtrlSpawnGroups.AppendItem(result,
+												 "[" + str(row["Spawn2Id"]) + "] " + row["NpcName"] + "  (" + str(
+													 row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(
+													 row["Spawn2Z"]) + ")")
+			else:
+				spawngroup = self.m_treeCtrlSpawnGroups.AppendItem(root, row["spawngroup_name"])
+				spawnpoint = self.m_treeCtrlSpawnGroups.AppendItem(spawngroup,
+												 "[" + str(row["Spawn2Id"]) + "] " + row["NpcName"] + "  (" + str(
+													 row["Spawn2X"]) + ", " + str(row["Spawn2Y"]) + ", " + str(
+													 row["Spawn2Z"]) + ")")
+		spawnscursor.close()
 	#END TODO
 
 	def OnSave(self, event):
