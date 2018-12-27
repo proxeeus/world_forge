@@ -1,4 +1,4 @@
-# World Forge
+# World Forge - an EQEmu 3D Zone Editor
 Fork of Panda_Zonewalk, the goal is to develop an EQEmu World Editor (spawns, waypoints etc).
 
 The rough idea as of now would be to have a tool capable of:
