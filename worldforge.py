@@ -64,7 +64,7 @@ from components.gridpointmanager import GridpointManager
 last_selected_model = None
 spawndialog = None
 
-VERSION = '0.1.4'
+VERSION = '1.0 (alpha)'
 
 # Function to put instructions on the screen.
 def addInstructions(pos, msg):
