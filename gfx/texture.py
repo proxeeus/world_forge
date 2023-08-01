@@ -241,7 +241,10 @@ class TextureManager():
         pixel_index = offset
                 
         for i in range(0, npixels):
-            (pixel,) = struct.unpack('<b', bm[pixel_index:pixel_index+1])            
+            try:
+                (pixel,) = struct.unpack('<b', bm[pixel_index:pixel_index+1])            
+            except Exception:
+                 pass	
             rgba = palette[pixel] | -16777216    # set alpha to fully opaque
             img += struct.pack('<i', rgba)
             pixel_index += 1
