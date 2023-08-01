@@ -24,9 +24,24 @@ possible to auto-save modifications made while using World Forge's 3D view (this
 
 Waypoints & grids are on the todo list and will most likely follow the same rules.
 
-Installation notes:
+# Installation notes #
 
-- Download Panda3D
+## New method ##
+
+- Clone this repo locally
+- Inside /dependencies/ is a Panda3D archive, unpack it somewhere
+- Edit worldforge.cfg, specifically those key/value pairs
+	- basepath
+	- host
+	- user
+	- password
+	- port
+	- db
+- Launch worldforge *from* its directory by typing the command: **%*path_to_panda3D*/python/python.exe worldforge.py**
+
+## Old method (buggy / no longer supported) ##
+
+- Download Panda3D 1.8.1
 - Install wxWidgets (the whl is in the /dependencies/ dir) with the following command 
 python -m pip install "path_to_whl"
 - Go to where wxWidgets has been installed (python_path\Lib\site-packages\)
